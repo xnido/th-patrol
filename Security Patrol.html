@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thailand Branch Security Patrol</title>
+    <style>
+        :root {
+            --jw-blue: #4a6da7;
+            --jw-blue-hover: #3a5685;
+            --jw-active-bg: #d6e2f3; 
+            --jw-active-text: #2a4b7c;
+            --bg-body: #292929;
+            --bg-card: #ebebeb;
+            --text-main: #222;
+            --text-sub: #555;
+            --border-color: #ccc;
+            --panel-bg: rgba(0, 0, 0, 0.3);
+            --clear-btn-border: rgba(255, 255, 255, 0.4);
+            --clear-btn-text: rgba(255, 255, 255, 0.8);
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f4f4f4;
+            --bg-card: #ffffff;
+            --text-main: #222;
+            --text-sub: #666;
+            --border-color: #ddd;
+            --panel-bg: #3a5685;
+            --clear-btn-border: rgba(255, 255, 255, 0.5);
+            --clear-btn-text: #fff;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #1a1a1a;
+            --bg-card: #2d2d2d;
+            --text-main: #eeeeee;
+            --text-sub: #aaaaaa;
+            --border-color: #444;
+            --jw-active-bg: #3a4b63;
+            --jw-active-text: #fff;
+        }
+
+        body { 
+            font-family: -apple-system, system-ui, sans-serif; 
+            background: var(--bg-body); margin: 0; padding: 10px; color: var(--text-main);
+            transition: 0.3s; line-height: 1.4;
+        }
+
+        .header { background: var(--jw-blue); color: #fff; padding: 15px; border-radius: 8px 8px 0 0; text-align: center; }
+        .header h1 { margin: 0; font-size: 18px; }
+        
+        .control-panel { 
+            background: var(--panel-bg); padding: 10px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
+            margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .theme-switch-wrapper { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+        .theme-btn { 
+            padding: 4px 10px; border: 1px solid rgba(255,255,255,0.6); background: transparent; 
+            color: #fff; border-radius: 4px; font-size: 10px; cursor: pointer; 
+        }
+        .theme-btn.active { background: #fff; color: var(--jw-blue); font-weight: bold; }
+
+        .shift-select { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;}
+        .time-slot { 
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); 
+            color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 12px; cursor: pointer; text-align: center; font-weight: bold;
+        }
+        .time-slot.active { background: #fff; color: var(--jw-blue); border-color: #fff; }
+
+        .danger-zone { text-align: center; }
+        .btn-clear { 
+            background: transparent; color: var(--clear-btn-text); border: 1px solid var(--clear-btn-border); 
+            padding: 4px 12px; border-radius: 20px; font-size: 10px; cursor: pointer; 
+            transition: 0.2s;
+        }
+
+        .section-tag { background: var(--jw-blue); color: #fff; padding: 4px 12px; border-radius: 4px; font-size: 13px; margin: 15px 0 8px; display: inline-block; font-weight: bold; }
+        
+        .item { background: var(--bg-card); border-radius: 8px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .title-line { display: flex; align-items: flex-start; margin-bottom: 5px; }
+        .num { font-weight: bold; color: var(--jw-blue); margin-right: 8px; min-width: 20px; }
+        .desc-en { font-weight: bold; font-size: 14px; }
+        .detail-line { display: block; font-size: 13px; color: var(--text-sub); margin-left: 28px; margin-bottom: 10px; }
+        
+        .sub-points-text { margin-left: 28px; margin-bottom: 10px; font-size: 13px; color: var(--text-sub); }
+        .sub-points-text div { margin-bottom: 4px; }
+
+        .controls { display: flex; gap: 10px; margin-left: 28px; }
+        .btn { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: var(--bg-card); font-size: 13px; font-weight: bold; color: var(--text-main); text-align: center; text-decoration: none; }
+        .btn-qr { background: var(--jw-blue); color: white !important; }
+        .btn-done.active { background: var(--jw-active-bg) !important; color: var(--jw-active-text) !important; border-color: var(--jw-blue) !important; }
+
+        .input-group { background: rgba(0,0,0,0.03); padding: 8px; border-radius: 4px; margin: 8px 0 8px 28px; font-size: 12px; }
+        input { width: 55px; padding: 4px; border: 1px solid var(--border-color); text-align: center; }
+        .alert-temp { background: #e74c3c !important; color: white !important; }
+    </style>
+</head>
+<body data-theme="dark">
+
+<div class="header">
+    <h1>Thailand Branch Security Patrol</h1>
+</div>
+
+<div class="control-panel">
+    <div class="theme-switch-wrapper">
+        <button class="theme-btn" onclick="setTheme('light')">浅色</button>
+        <button class="theme-btn" onclick="setTheme('dark')">深色</button>
+        <button class="theme-btn" onclick="setTheme('auto')">系统默认</button>
+    </div>
+    
+    <div class="shift-select" id="timeSlots"></div>
+
+    <div class="danger-zone">
+        <button class="btn-clear" onclick="clearRecords()">重置打卡数据</button>
+    </div>
+</div>
+
+<div id="app"></div>
+
+<script>
+    const qrLinks = {
+        1: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-Gate-North&Source=confirmation.aspx",
+        2: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B4-MNT&Source=confirmation.aspx?",
+        3: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-2-B3-Entrance-Rear&Source=confirmation.aspx?",
+        5: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B2B3-Linkway&Source=confirmation.aspx?",
+        8: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Entrance-Laundry&Source=confirmation.aspx?",
+        9: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-Garden-Shed&Source=confirmation.aspx?",
+        10: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B2-Entrance-Shipping&Source=confirmation.aspx?",
+        11: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Entrance-Lobby&Source=confirmation.aspx?",
+        12: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Water-Pump&Source=confirmation.aspx?",
+        13: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-Main-Gate&Source=confirmation.aspx?",
+        15: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B9-Gate&Source=confirmation.aspx",
+        16: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-Emergency-Exit",
+        17: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B5-Gate&Source=confirmation.aspx",
+        18: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B6-Gate&Source=confirmation.aspx",
+        19: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Courtyard&Source=confirmation.aspx?",
+        20: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-Open-Office",
+        26: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Kitchen-Stock&Source=confirmation.aspx?",
+        27: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Boiler&Source=confirmation.aspx?",
+        28: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Kitchen&Source=confirmation.aspx?",
+        30: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Laundry&Source=confirmation.aspx?",
+        32: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-B1-Pantry&Source=confirmation.aspx?",
+        33: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-2-B1-Offices&Source=confirmation.aspx?"
+    };
+
+    const slots = ["20:00", "22:00", "01:00", "03:00", "06:00"];
+
+    const patrolData = [
+        { section: "Exterior (室外巡逻)", list: [
+            { id: 1, en: "Back door / gate behind Maintenance Building", zh: "<b>维修楼后门 / 后门闸门</b>：检查门是否已上锁" },
+            { id: 2, en: "Doors at Maintenance Building", zh: "<b>维修楼的门</b>：检查维修区和主储藏室的两扇门是否都已上锁" },
+            { id: 3, en: "Back doors of Building 3, level 1 and 2", zh: "<b>3号楼一层和二层的后门</b>：检查两扇门是否都已上锁（从外侧检查门把手）" },
+            { id: 4, en: "All windows on lower level Building 3, 2, 1", zh: "<b>3号、2号、1号楼底层所有窗户</b>：检查中央锁是否正确锁好（此项检查在之后的巡逻过程中持续进行）" },
+            { id: 5, en: "Link way between Building 2 and 3", zh: "<b>2号楼与3号楼之间的连廊</b>：检查门是否已上锁（从外侧检查门把手）" },
+            { id: 6, en: "Hoses", zh: "<b>水管</b>：检查所有水管是否已关闭" },
+            { id: 7, en: "Cars in Parking area behind Bethel", zh: "<b>伯特利后方停车区的车辆</b>：检查是否有车辆未关闭车灯（车内或车外灯）" },
+            { id: 8, en: "Bethel Laundry & Garden Storage", zh: "洗衣房 & 园艺储存区", isMulti: true, 
+              points: [
+                "<b>8.1 伯特利1号楼洗衣房附近的门</b>：检查门是否已上锁（从外侧检查门把手）",
+                "<b>8.2 园艺工具户外储藏室</b>：检查门是否已上锁",
+                "<b>8.3 煤气罐</b>：检查是否有煤气泄漏（是否有强烈煤气味）"
+              ] 
+            },
+            { id: 9, en: "Garden tool shed", zh: "<b>园艺工具棚</b>：检查门是否已上锁，并检查空气泵阀门是否正确关闭" },
+            { id: 10, en: "Shipping entry door from outside", zh: "<b>收发货区外侧入口门</b>：检查门是否正确上锁（从外侧检查门把手）" },
+            { id: 11, en: "Main Bethel Lobby door", zh: "<b>伯特利大厅主门</b>：检查门两侧是否都正确上锁（从外侧检查门把手）" },
+            { id: 12, en: "Chiller & Water Pump House", zh: "<b>冷水机</b>：检查是否有严重漏水（因冷凝产生少量积水属正常），并检查水泵房门是否已上锁" },
+            { id: 13, en: "Main Bethel Gate and small side door", zh: "<b>伯特利主大门和侧小门</b>：检查大门和小门是否正确上锁" },
+            { id: 14, en: "Cars at parking area in front of Bethel", zh: "<b>伯特利前方停车区的车辆</b>：检查是否有车辆未关闭车灯或车内灯" },
+            { id: 15, en: "House 9 (Gate & Doors)", zh: "<b>9号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁" },
+            { id: 16, en: "Emergency exit door from open office", zh: "<b>开放式办公室紧急出口门</b>：检查门是否正确上锁" },
+            { id: 17, en: "House 5 (Gate & Doors)", zh: "<b>5号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁" },
+            { id: 18, en: "House 6 (Gate & Doors)", zh: "<b>6号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁" },
+            { id: 19, en: "Garden / Patio area", zh: "<b>花园 / 露台区域</b>：检查三扇门是否都已正确上锁（从外侧逐一检查门把手）" }
+        ]},
+        { section: "Interior L1 (室内 L1)", list: [
+            { id: 20, en: "Open Office Area", zh: "<b>开放式办公室区域</b>：检查所有灯是否已关闭（包括会议室），并检查后门是否正确上锁" },
+            { id: 21, en: "Exercise rooms", zh: "<b>健身房</b>：检查两间健身房的空调和灯是否已关闭。每晚约22:00倒空除湿机" },
+            { id: 22, en: "Locker room near Exercise rooms", zh: "<b>健身房附近更衣室</b>：检查男女淋浴间的灯是否已关闭" },
+            { id: 23, en: "Family Lounge", zh: "<b>家庭休息室</b>：检查家庭休息室及相连厨房的灯是否已关闭" },
+            { id: 24, en: "Shipping Room", zh: "<b>收发货室</b>：检查灯是否已关闭，卷闸门是否完全关闭" },
+            { id: 25, en: "Office 1111, 1112, 1114", zh: "<b>1111、1112（录音室）、1114（理发室）办公室</b>：检查各办公室的空调和灯是否已关闭" },
+            { id: 26, en: "Kitchen stock room freezer", zh: "<b>厨房储藏室冷冻柜</b>：检查温度是否在-17至-20度之间", type: "temp", min: -20, max: -17 },
+            { id: 27, en: "Boiler room", zh: "<b>锅炉房</b>：检查设备是否按要求摆放整齐，并检查是否有煤气或漏水情况（是否有煤气或烧焦气味）" },
+            { id: 28, en: "Kitchen", zh: "<b>厨房</b>：检查冷藏室温度是否在2至4度之间，燃气灶引火火焰是否关闭，吊扇是否关闭，空调是否关闭，所有电器是否关闭，灯是否关闭，并检查是否有漏水", type: "temp", min: 2, max: 4 },
+            { id: 29, en: "Dining room", zh: "<b>餐厅</b>：检查空调和灯是否已关闭" },
+            { id: 30, en: "Laundry", zh: "<b>洗衣房</b>：检查空调和灯是否已关闭，检查大型烘干机后方的煤气阀是否关闭，并检查是否有漏水" },
+            { id: 31, en: "Toilets near dining room", zh: "<b>餐厅附近洗手间</b>：检查男女洗手间是否有漏水，灯是否已关闭" },
+            { id: 32, en: "Pantry", zh: "<b>茶水间</b>：检查冰箱温度是否在2至5度之间，冷冻柜温度是否在-17至-22度之间", type: "pantry" }
+        ]},
+        { section: "Interior L2 (室内 L2)", list: [
+            { id: 33, en: "Office Section Building 1, Level 2 Offices", zh: "<b>1号楼二层办公室区域</b>：检查各办公室的空调和灯是否已关闭，并检查所有办公室门是否已上锁" },
+            { id: 34, en: "Fire doors and storage rooms", zh: "<b>防火门和储藏室</b>：检查所有防火门是否关闭，所有储藏室是否已上锁" },
+            { id: 35, en: "AHU (Air Handling Unit)", zh: "<b>空气处理机组（AHU）</b>：检查是否有严重漏水（因冷凝产生少量积水属正常）" }
+        ]}
+    ];
+
+    let currentSlot = slots[0];
+    const DB_KEY = "Patrol_Final_V17";
+
+    function setTheme(theme) {
+        if (theme === 'auto') {
+            const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        } else {
+            document.body.setAttribute('data-theme', theme);
+        }
+        localStorage.setItem('user-theme', theme);
+        updateThemeButtons(theme);
+    }
+
+    function updateThemeButtons(theme) {
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText.includes(theme === 'auto' ? '系统' : theme === 'dark' ? '黑暗' : '明亮'));
+        });
+    }
+
+    function init() {
+        setTheme(localStorage.getItem('user-theme') || 'auto');
+        const slotEl = document.getElementById('timeSlots');
+        slots.forEach(s => {
+            const btn = document.createElement('div');
+            btn.className = `time-slot ${s === currentSlot ? 'active' : ''}`;
+            btn.innerText = s;
+            btn.onclick = () => { currentSlot = s; render(); };
+            slotEl.appendChild(btn);
+        });
+        render();
+    }
+
+    function render() {
+        document.querySelectorAll('.time-slot').forEach(b => b.classList.toggle('active', b.innerText === currentSlot));
+        const app = document.getElementById('app');
+        const history = JSON.parse(localStorage.getItem(DB_KEY) || "{}");
+        const doneList = history[currentSlot] || [];
+        
+        app.innerHTML = '';
+        patrolData.forEach(group => {
+            app.innerHTML += `<div class="section-tag">${group.section}</div>`;
+            group.list.forEach(item => {
+                const isDone = doneList.includes(item.id.toString());
+                const qid = parseInt(item.id); 
+                let qrBtn = qrLinks[qid] ? `<a href="${qrLinks[qid]}" class="btn btn-qr" target="_blank">Scan</a>` : '';
+                
+                let extra = '';
+                if (item.type === 'temp') {
+                    extra = `<div class="input-group">温度记录: <input type="number" step="0.1" onchange="chk(this, ${item.min}, ${item.max})"> °C</div>`;
+                } else if (item.type === 'pantry') {
+                    extra = `<div class="input-group">
+                        冷藏(2-5°C): <input type="number" step="0.1" onchange="chk(this, 2, 5)"> 
+                        冷冻(-17~-22°C): <input type="number" step="0.1" onchange="chk(this, -22, -17)">
+                    </div>`;
+                }
+
+                let descHtml = '';
+                if (item.isMulti) {
+                    descHtml = `<div class="sub-points-text">${item.points.map(p => `<div>${p}</div>`).join('')}</div>`;
+                } else {
+                    descHtml = `<span class="detail-line">${item.zh}</span>`;
+                }
+
+                app.innerHTML += `
+                    <div class="item">
+                        <div class="title-line">
+                            <span class="num">${item.id}.</span><span class="desc-en">${item.en}</span>
+                        </div>
+                        ${descHtml}
+                        ${extra}
+                        <div class="controls">
+                            ${qrBtn}
+                            <button class="btn btn-done ${isDone ? 'active' : ''}" onclick="toggle('${item.id}', this)">${isDone ? '已记录' : '完成'}</button>
+                        </div>
+                    </div>`;
+            });
+        });
+    }
+
+    function toggle(id, btn) {
+        btn.classList.toggle('active');
+        const active = btn.classList.contains('active');
+        btn.innerText = active ? '已记录' : '完成';
+        let history = JSON.parse(localStorage.getItem(DB_KEY) || "{}");
+        if (!history[currentSlot]) history[currentSlot] = [];
+        if (active) history[currentSlot].push(id);
+        else history[currentSlot] = history[currentSlot].filter(x => x !== id);
+        localStorage.setItem(DB_KEY, JSON.stringify(history));
+    }
+
+    function chk(el, min, max) {
+        const v = parseFloat(el.value);
+        if (isNaN(v)) return;
+        if (v < min || v > max) { el.classList.add('alert-temp'); alert("异常！标准: " + min + " 到 " + max); }
+        else { el.classList.remove('alert-temp'); el.style.background = "#eaffea"; el.style.color = "#222"; }
+    }
+
+    function clearRecords() {
+        if(confirm("确定要重置打卡数据吗？")) {
+            localStorage.removeItem(DB_KEY);
+            render();
+        }
+    }
+
+    init();
+</script>
+</body>
+</html>
