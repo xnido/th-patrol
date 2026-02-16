@@ -125,7 +125,7 @@
         <div class="shift-select" id="timeSlots"></div>
 
         <div class="danger-zone">
-            <button class="btn-clear" onclick="clearRecords()">重置所有记录</button>
+            <button class="btn-clear" onclick="clearRecords()">重置打卡</button>
             <button class="btn-clear" onclick="logout()">退出登录</button>
         </div>
     </div>
@@ -302,26 +302,24 @@
                     </div>`;
                 } else if (item.type === 'kitchen_temp') {
                     extra = `<div class="input-group">冷藏室 1号: <input type="number" step="0.1" onchange="chk(this, 2, 4)"> °C</div>`;
-                else if (item.type === 'pantry_temp') {
-    extra = `<div class="input-group">
-        <div class="input-row" style="display: block;">
-            <b>冷藏 (2-5°C):</b><br>
-            <div style="margin-top: 8px;">
-                9号<input type="number" step="0.1" onchange="chk(this, 2, 5)"> 
-                8号<input type="number" step="0.1" onchange="chk(this, 2, 5)"> 
-                4号<input type="number" step="0.1" onchange="chk(this, 2, 5)">
-            </div>
-        </div>
-        <div class="input-row" style="display: block; margin-top: 15px;">
-            <b>冷冻 (-17~-22°C):</b><br>
-            <div style="margin-top: 8px;">
-                6号<input type="number" step="0.1" onchange="chk(this, -22, -17)"> 
-                7号<input type="number" step="0.1" onchange="chk(this, -22, -17)"> 
-                5号<input type="number" step="0.1" onchange="chk(this, -22, -17)">
-            </div>
-        </div>
-    </div>`;
-}
+                } else if (item.type === 'pantry_temp') {
+                    extra = `<div class="input-group">
+                        <div class="input-row" style="display: block;">
+                            <b>冷藏 (2-5°C):</b><br>
+                            <div style="margin-top: 8px;">
+                                9号<input type="number" step="0.1" onchange="chk(this, 2, 5)"> 
+                                8号<input type="number" step="0.1" onchange="chk(this, 2, 5)"> 
+                                4号<input type="number" step="0.1" onchange="chk(this, 2, 5)">
+                            </div>
+                        </div>
+                        <div class="input-row">冷冻 (-17~-22°C): 
+                            6号<input type="number" step="0.1" onchange="chk(this, -22, -17)"> 
+                            7号<input type="number" step="0.1" onchange="chk(this, -22, -17)"> 
+                            5号<input type="number" step="0.1" onchange="chk(this, -22, -17)">
+                        </div>
+                    </div>`;
+                }
+
                 let descHtml = item.isMulti ? `<div class="sub-points-text">${item.points.map(p => `<div>${p}</div>`).join('')}</div>` : `<span class="detail-line">${item.zh}</span>`;
 
                 app.innerHTML += `
@@ -369,4 +367,3 @@
 </script>
 </body>
 </html>
-
