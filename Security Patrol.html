@@ -308,7 +308,7 @@
                         ${extra}
                         <div class="controls">
                             ${qrBtn}
-                            <button class="btn btn-done ${isDone ? 'active' : ''}" onclick="toggle('${item.id}', this)">${isDone ? '已记录' : '完成'}</button>
+                            <button class="btn btn-done ${isDone ? 'active' : ''}" onclick="toggle('${item.id}', this)">${isDone ? '已完成' : '检查'}</button>
                         </div>
                     </div>`;
             });
@@ -318,7 +318,7 @@
     function toggle(id, btn) {
         btn.classList.toggle('active');
         const active = btn.classList.contains('active');
-        btn.innerText = active ? '已记录' : '完成';
+        btn.innerText = active ? '已完成' : '检查';
         let history = JSON.parse(localStorage.getItem(DB_KEY) || "{}");
         if (!history[currentSlot]) history[currentSlot] = [];
         if (active) history[currentSlot].push(id);
@@ -345,6 +345,3 @@
 </script>
 </body>
 </html>
-
-
-
