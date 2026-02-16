@@ -78,33 +78,35 @@
 
         .section-tag { background: var(--jw-blue); color: #fff; padding: 6px 16px; border-radius: 4px; font-size: 15px; margin: 15px 0 8px; display: inline-block; font-weight: bold; }
         
-        /* 核心修改：取消所有内容缩进 */
         .item { background: var(--bg-card); border-radius: 10px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .title-line { display: flex; align-items: flex-start; margin-bottom: 8px; }
         .num { font-weight: bold; color: var(--jw-blue); margin-right: 8px; min-width: 25px; font-size: 18px; }
         .desc-en { font-weight: bold; font-size: 16px; flex: 1; }
         
-        /* 移除 margin-left 让说明文字靠左 */
         .detail-line { display: block; font-size: 15px; color: var(--text-sub); margin-left: 0; margin-bottom: 12px; }
         .sub-points-text { margin-left: 0; margin-bottom: 12px; font-size: 15px; color: var(--text-sub); }
         .sub-points-text div { margin-bottom: 6px; }
 
-        /* 移除按钮组缩进 */
         .controls { display: flex; gap: 12px; margin-left: 0; }
-        
         .btn { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: var(--bg-card); font-size: 15px; font-weight: bold; color: var(--text-main); text-align: center; text-decoration: none; }
         .btn-qr { background: var(--jw-blue); color: white !important; }
         .btn-qr.scanned { background: var(--scan-done) !important; opacity: 0.7; }
         .btn-done.active { background: var(--jw-active-bg) !important; color: var(--jw-active-text) !important; border-color: var(--jw-blue) !important; }
 
-        /* 移除输入框组缩进 */
         .input-group { background: rgba(0,0,0,0.05); padding: 10px; border-radius: 6px; margin: 8px 0; font-size: 14px; }
         .temp-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
         input { width: 65px; padding: 8px; border: 1px solid var(--border-color); text-align: center; font-size: 16px; border-radius: 4px; }
         .alert-temp { background: #e74c3c !important; color: white !important; }
+        
+        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body data-theme="dark">
+
+<div id="lock-screen" style="display: none;">
+    <h2 style="color: white; font-size: 18px; margin-bottom: 20px;">Thailand Branch Patrol</h2>
+    <button class="btn btn-qr" style="width: 200px;" onclick="verifyAccess()">点击输入访问口令</button>
+</div>
 
 <div id="main-content">
     <div class="header">
@@ -122,6 +124,7 @@
 
         <div class="danger-zone">
             <button class="btn-clear" onclick="clearRecords()">重置打卡</button>
+            <button class="btn-clear" onclick="logout()">退出登录</button>
         </div>
     </div>
 
@@ -129,8 +132,40 @@
 </div>
 
 <script>
-    const DB_KEY = "Patrol_Final_V20";
-    const SCAN_KEY = "Patrol_Scan_V2";
+    const ACCESS_CODE = "4026"; 
+    const AUTH_KEY = "Patrol_Auth_V1";
+    const DB_KEY = "Patrol_Final_V21";
+    const SCAN_KEY = "Patrol_Scan_V3";
+
+    function verifyAccess() {
+        const input = prompt("请输入访问口令 (Access Code):");
+        if (input === ACCESS_CODE) {
+            localStorage.setItem(AUTH_KEY, "true");
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            init();
+        } else if (input !== null) {
+            alert("口令错误！");
+        }
+    }
+
+    function checkAuth() {
+        if (localStorage.getItem(AUTH_KEY) === "true") {
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            init();
+        } else {
+            document.getElementById('lock-screen').style.display = 'flex';
+            document.getElementById('main-content').style.display = 'none';
+        }
+    }
+
+    function logout() {
+        if(confirm("确定要退出登录吗？")) {
+            localStorage.removeItem(AUTH_KEY);
+            location.reload();
+        }
+    }
 
     const qrLinks = {
         1: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-Gate-North&Source=confirmation.aspx",
@@ -321,7 +356,7 @@
         }
     }
 
-    init();
+    checkAuth();
 </script>
 </body>
 </html>
