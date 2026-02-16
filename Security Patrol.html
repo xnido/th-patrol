@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thailand Branch Security Patrol</title>
     <style>
         :root {
@@ -18,14 +18,13 @@
             --panel-bg: rgba(0, 0, 0, 0.3);
             --clear-btn-border: rgba(255, 255, 255, 0.4);
             --clear-btn-text: rgba(255, 255, 255, 0.8);
-            --scan-done: #6c757d; 
         }
 
         [data-theme="light"] {
             --bg-body: #f4f4f4;
             --bg-card: #ffffff;
             --text-main: #222;
-            --text-sub: #555;
+            --text-sub: #666;
             --border-color: #ddd;
             --panel-bg: #3a5685;
             --clear-btn-border: rgba(255, 255, 255, 0.5);
@@ -45,25 +44,25 @@
         body { 
             font-family: -apple-system, system-ui, sans-serif; 
             background: var(--bg-body); margin: 0; padding: 10px; color: var(--text-main);
-            transition: 0.3s; line-height: 1.4; font-size: 16px;
+            transition: 0.3s; line-height: 1.5; font-size: 16px; /* 增大手机字号 */
         }
 
-        .header { background: var(--jw-blue); color: #fff; padding: 20px 15px; border-radius: 8px 8px 0 0; text-align: center; }
+        .header { background: var(--jw-blue); color: #fff; padding: 15px; border-radius: 8px 8px 0 0; text-align: center; }
         .header h1 { margin: 0; font-size: 20px; }
         
         .control-panel { 
-            background: var(--panel-bg); padding: 15px 10px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
+            background: var(--panel-bg); padding: 10px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;
             margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .theme-switch-wrapper { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; }
+        .theme-switch-wrapper { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
         .theme-btn { 
             padding: 6px 12px; border: 1px solid rgba(255,255,255,0.6); background: transparent; 
             color: #fff; border-radius: 4px; font-size: 12px; cursor: pointer; 
         }
         .theme-btn.active { background: #fff; color: var(--jw-blue); font-weight: bold; }
 
-        .shift-select { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px;}
+        .shift-select { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;}
         .time-slot { 
             background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); 
             color: #fff; padding: 10px 14px; border-radius: 4px; font-size: 14px; cursor: pointer; text-align: center; font-weight: bold;
@@ -76,36 +75,39 @@
             padding: 6px 14px; border-radius: 20px; font-size: 11px; cursor: pointer; 
         }
 
-        .section-tag { background: var(--jw-blue); color: #fff; padding: 6px 16px; border-radius: 4px; font-size: 15px; margin: 15px 0 8px; display: inline-block; font-weight: bold; }
+        .section-tag { background: var(--jw-blue); color: #fff; padding: 6px 14px; border-radius: 4px; font-size: 14px; margin: 15px 0 8px; display: inline-block; font-weight: bold; }
         
-        .item { background: var(--bg-card); border-radius: 10px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .item { background: var(--bg-card); border-radius: 8px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .title-line { display: flex; align-items: flex-start; margin-bottom: 8px; }
-        .num { font-weight: bold; color: var(--jw-blue); margin-right: 8px; min-width: 25px; font-size: 18px; }
-        .desc-en { font-weight: bold; font-size: 16px; flex: 1; }
+        .num { font-weight: bold; color: var(--jw-blue); margin-right: 8px; min-width: 25px; font-size: 16px; }
+        .desc-en { font-weight: bold; font-size: 16px; }
         
-        .detail-line { display: block; font-size: 15px; color: var(--text-sub); margin-left: 0; margin-bottom: 12px; }
-        .sub-points-text { margin-left: 0; margin-bottom: 12px; font-size: 15px; color: var(--text-sub); }
+        /* 取消缩进 */
+        .detail-line { display: block; font-size: 14px; color: var(--text-sub); margin-left: 0; margin-bottom: 12px; }
+        .sub-points-text { margin-left: 0; margin-bottom: 12px; font-size: 14px; color: var(--text-sub); }
         .sub-points-text div { margin-bottom: 6px; }
+        .controls { display: flex; gap: 10px; margin-left: 0; }
 
-        .controls { display: flex; gap: 12px; margin-left: 0; }
-        .btn { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: var(--bg-card); font-size: 15px; font-weight: bold; color: var(--text-main); text-align: center; text-decoration: none; }
+        .btn { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: var(--bg-card); font-size: 14px; font-weight: bold; color: var(--text-main); text-align: center; text-decoration: none; }
         .btn-qr { background: var(--jw-blue); color: white !important; }
-        .btn-qr.scanned { background: var(--scan-done) !important; opacity: 0.7; }
+        /* Scan点击后的颜色 */
+        .btn-qr.clicked { background: #2a4b7c !important; opacity: 0.8; }
         .btn-done.active { background: var(--jw-active-bg) !important; color: var(--jw-active-text) !important; border-color: var(--jw-blue) !important; }
 
-        .input-group { background: rgba(0,0,0,0.05); padding: 10px; border-radius: 6px; margin: 8px 0; font-size: 14px; }
-        .temp-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
-        input { width: 65px; padding: 8px; border: 1px solid var(--border-color); text-align: center; font-size: 16px; border-radius: 4px; }
-        .alert-temp { background: #e74c3c !important; color: white !important; }
+        .input-group { background: rgba(0,0,0,0.04); padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 13px; }
+        .input-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .input-row:last-child { margin-bottom: 0; }
+        input { width: 60px; padding: 6px; border: 1px solid var(--border-color); text-align: center; font-size: 14px; border-radius: 4px; }
         
+        .alert-temp { background: #e74c3c !important; color: white !important; }
         #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body data-theme="dark">
 
 <div id="lock-screen" style="display: none;">
-    <h2 style="color: white; font-size: 18px; margin-bottom: 20px;">Thailand Branch Patrol</h2>
-    <button class="btn btn-qr" style="width: 200px;" onclick="verifyAccess()">点击输入访问口令</button>
+    <h2 style="color: white; font-size: 20px; margin-bottom: 20px;">Thailand Branch Patrol</h2>
+    <button class="btn btn-qr" style="width: 220px;" onclick="verifyAccess()">点击输入访问口令</button>
 </div>
 
 <div id="main-content">
@@ -123,7 +125,7 @@
         <div class="shift-select" id="timeSlots"></div>
 
         <div class="danger-zone">
-            <button class="btn-clear" onclick="clearRecords()">重置打卡</button>
+            <button class="btn-clear" onclick="clearRecords()">重置所有记录</button>
             <button class="btn-clear" onclick="logout()">退出登录</button>
         </div>
     </div>
@@ -132,10 +134,8 @@
 </div>
 
 <script>
-    const ACCESS_CODE = "4026"; 
+    const ACCESS_CODE = "4026";
     const AUTH_KEY = "Patrol_Auth_V1";
-    const DB_KEY = "Patrol_Final_V21";
-    const SCAN_KEY = "Patrol_Scan_V3";
 
     function verifyAccess() {
         const input = prompt("请输入访问口令 (Access Code):");
@@ -161,7 +161,7 @@
     }
 
     function logout() {
-        if(confirm("确定要退出登录吗？")) {
+        if(confirm("确定要退出登录吗？下次进入需重新输入口令。")) {
             localStorage.removeItem(AUTH_KEY);
             location.reload();
         }
@@ -228,13 +228,13 @@
             { id: 23, en: "Family Lounge", zh: "<b>家庭休息室</b>：检查家庭休息室及相连厨房的灯是否已关闭" },
             { id: 24, en: "Shipping Room", zh: "<b>收发货室</b>：检查灯是否已关闭，卷闸门是否完全关闭" },
             { id: 25, en: "Office 1111, 1112, 1114", zh: "<b>1111（办公室）、1112（录音室）、1114（理发室）</b>：检查各办公室的空调和灯是否已关闭" },
-            { id: 26, en: "Storge Room", zh: "<b>储藏室冷冻柜</b>：检查 2号、3号 冰柜温度是否在-17至-20度之间", type: "storage" },
+            { id: 26, en: "Storge Room", zh: "<b>储藏室冷冻柜</b>：检查温度是否在-17至-20度之间", type: "storage_temp" },
             { id: 27, en: "Boiler Room", zh: "<b>锅炉房</b>：检查设备是否按要求摆放整齐，并检查是否有煤气或漏水情况（是否有煤气或烧焦气味）" },
-            { id: 28, en: "Kitchen", zh: "<b>厨房</b>：检查 1号 冷藏室温度是否在2至4度之间，燃气灶引火火焰是否关闭，吊扇是否关闭，空调是否关闭，所有电器是否关闭，灯是否关闭，并检查是否有漏水", type: "kitchen" },
+            { id: 28, en: "Kitchen", zh: "<b>厨房</b>：检查冷藏室温度是否在2至4度之间，燃气灶引火火焰是否关闭，吊扇是否关闭，空调是否关闭，所有电器是否关闭，灯是否关闭，并检查是否有漏水", type: "kitchen_temp" },
             { id: 29, en: "Dining Room", zh: "<b>餐厅</b>：检查空调和灯是否已关闭" },
             { id: 30, en: "Laundry", zh: "<b>洗衣房</b>：检查空调和灯是否已关闭，检查大型烘干机后方的煤气阀是否关闭，并检查是否有漏水" },
             { id: 31, en: "Toilets", zh: "<b>餐厅附近洗手间</b>：检查男女洗手间是否有漏水，灯是否已关闭" },
-            { id: 32, en: "Pantry", zh: "<b>茶水间</b>：检查 9, 8, 4号 (冷藏 2-5°C) 及 6, 7, 5号 (冷冻 -17~-22°C)", type: "pantry" }
+            { id: 32, en: "Pantry", zh: "<b>茶水间</b>：检查冰箱温度是否在2至5度之间，冷冻柜温度是否在-17至-22度之间", type: "pantry_temp" }
         ]},
         { section: "Interior L2 (室内 L2)", list: [
             { id: 33, en: "Office Section Building 1, Level 2", zh: "<b>1号楼二层办公室区域</b>：检查各办公室的空调和灯是否已关闭，并检查所有办公室门是否已上锁" },
@@ -244,6 +244,7 @@
     ];
 
     let currentSlot = slots[0];
+    const DB_KEY = "Patrol_Final_V17";
 
     function setTheme(theme) {
         if (theme === 'auto') {
@@ -253,6 +254,13 @@
             document.body.setAttribute('data-theme', theme);
         }
         localStorage.setItem('user-theme', theme);
+        updateThemeButtons(theme);
+    }
+
+    function updateThemeButtons(theme) {
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText.includes(theme === 'auto' ? '系统' : theme === 'dark' ? '黑暗' : '明亮'));
+        });
     }
 
     function init() {
@@ -269,36 +277,43 @@
         render();
     }
 
+    function markScanned(btn) {
+        btn.classList.add('clicked');
+    }
+
     function render() {
+        document.querySelectorAll('.time-slot').forEach(b => b.classList.toggle('active', b.innerText === currentSlot));
         const app = document.getElementById('app');
         const history = JSON.parse(localStorage.getItem(DB_KEY) || "{}");
-        const scanHistory = JSON.parse(localStorage.getItem(SCAN_KEY) || "{}");
         const doneList = history[currentSlot] || [];
-        const scannedList = scanHistory[currentSlot] || [];
         
         app.innerHTML = '';
         patrolData.forEach(group => {
             app.innerHTML += `<div class="section-tag">${group.section}</div>`;
             group.list.forEach(item => {
                 const isDone = doneList.includes(item.id.toString());
-                const isScanned = scannedList.includes(item.id.toString());
-                let qrBtn = qrLinks[item.id] ? `<a href="${qrLinks[item.id]}" class="btn btn-qr ${isScanned ? 'scanned' : ''}" target="_blank" onclick="markScanned('${item.id}')">Scan</a>` : '';
+                let qrBtn = qrLinks[item.id] ? `<a href="${qrLinks[item.id]}" class="btn btn-qr" target="_blank" onclick="markScanned(this)">Scan</a>` : '';
                 
                 let extra = '';
-                if (item.type === 'storage') {
+                if (item.type === 'storage_temp') {
                     extra = `<div class="input-group">
-                        <div class="temp-row">2号冷冻: <input type="number" step="0.1" onchange="chk(this, -20, -17)"> 3号冷冻: <input type="number" step="0.1" onchange="chk(this, -20, -17)"></div>
+                        <div class="input-row">冷冻柜 2号: <input type="number" step="0.1" onchange="chk(this, -20, -17)"> °C</div>
+                        <div class="input-row">冷冻柜 3号: <input type="number" step="0.1" onchange="chk(this, -20, -17)"> °C</div>
                     </div>`;
-                } else if (item.type === 'kitchen') {
+                } else if (item.type === 'kitchen_temp') {
+                    extra = `<div class="input-group">冷藏室 1号: <input type="number" step="0.1" onchange="chk(this, 2, 4)"> °C</div>`;
+                } else if (item.type === 'pantry_temp') {
                     extra = `<div class="input-group">
-                        <div class="temp-row">1号冷藏: <input type="number" step="0.1" onchange="chk(this, 2, 4)"></div>
-                    </div>`;
-                } else if (item.type === 'pantry') {
-                    extra = `<div class="input-group">
-                        <div style="font-weight:bold; margin-bottom:5px;">冷藏 (2-5°C): 9#, 8#, 4#</div>
-                        <div class="temp-row">9号: <input type="number" step="0.1" onchange="chk(this, 2, 5)"> 8号: <input type="number" step="0.1" onchange="chk(this, 2, 5)"> 4号: <input type="number" step="0.1" onchange="chk(this, 2, 5)"></div>
-                        <div style="font-weight:bold; margin:10px 0 5px;">冷冻 (-17~-22°C): 6#, 7#, 5#</div>
-                        <div class="temp-row">6号: <input type="number" step="0.1" onchange="chk(this, -22, -17)"> 7号: <input type="number" step="0.1" onchange="chk(this, -22, -17)"> 5号: <input type="number" step="0.1" onchange="chk(this, -22, -17)"></div>
+                        <div class="input-row">冷藏 (2-5°C): 
+                            4号<input type="number" step="0.1" onchange="chk(this, 2, 5)"> 
+                            8号<input type="number" step="0.1" onchange="chk(this, 2, 5)"> 
+                            9号<input type="number" step="0.1" onchange="chk(this, 2, 5)">
+                        </div>
+                        <div class="input-row">冷冻 (-17~-22°C): 
+                            5号<input type="number" step="0.1" onchange="chk(this, -22, -17)"> 
+                            6号<input type="number" step="0.1" onchange="chk(this, -22, -17)"> 
+                            7号<input type="number" step="0.1" onchange="chk(this, -22, -17)">
+                        </div>
                     </div>`;
                 }
 
@@ -320,16 +335,6 @@
         });
     }
 
-    function markScanned(id) {
-        let scanHistory = JSON.parse(localStorage.getItem(SCAN_KEY) || "{}");
-        if (!scanHistory[currentSlot]) scanHistory[currentSlot] = [];
-        if (!scanHistory[currentSlot].includes(id)) {
-            scanHistory[currentSlot].push(id);
-            localStorage.setItem(SCAN_KEY, JSON.stringify(scanHistory));
-        }
-        setTimeout(render, 500); 
-    }
-
     function toggle(id, btn) {
         btn.classList.toggle('active');
         const active = btn.classList.contains('active');
@@ -349,9 +354,8 @@
     }
 
     function clearRecords() {
-        if(confirm("确定要重置当前所有的打卡和扫码记录吗？")) {
+        if(confirm("确定要重置当前所有的打卡数据吗？")) {
             localStorage.removeItem(DB_KEY);
-            localStorage.removeItem(SCAN_KEY);
             render();
         }
     }
