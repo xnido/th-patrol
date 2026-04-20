@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Smart Budget Pro V9.2</title>
+    <title>Smart Budget Pro V9.6</title>
     <style>
         :root { 
             --primary: #1a73e8; --success: #34a853; --warning: #fbbc04; --danger: #ea4335;
@@ -18,43 +18,52 @@
         .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); box-sizing: border-box; }
         
         .mono { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }
-        .currency { font-size: 0.6em; margin-right: 2px; vertical-align: baseline; opacity: 0.7; }
-
+        
+        /* Header & Limit */
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
-        .limit-input-wrap { display: flex; align-items: center; background: var(--card-bg); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .limit-input-wrap { display: flex; align-items: center; background: var(--card-bg); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); }
         .limit-input-wrap input { border: none; background: transparent; width: 60px; font-weight: bold; color: var(--primary); font-size: 16px; outline: none; text-align: center; }
 
+        /* Top Health Bar */
+        .health-card { padding: 12px 20px; margin-bottom: 16px; }
+        .ratio-bar { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; display: flex; margin: 10px 0; }
+        .ratio-fill { height: 100%; transition: width 0.5s ease; }
+
+        /* Calendar */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
         .day-header { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: center; color: var(--text-light); padding-bottom: 8px; }
         .day { aspect-ratio: 1; border-radius: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; position: relative; transition: 0.2s; }
-        .day.today { border: 2px solid var(--primary); animation: pulse 2s infinite ease-in-out; }
-        .day.selected { background: var(--primary) !important; color: white !important; transform: scale(1.05); z-index: 2; box-shadow: 0 4px 10px rgba(26,115,232,0.4); }
+        .day.today { border: 2px solid var(--primary); }
+        .day.selected { background: var(--primary) !important; color: white !important; transform: scale(1.05); z-index: 2; }
         .day-amt { font-size: 9px; margin-top: 2px; font-weight: 500; }
-        .dot { width: 4px; height: 4px; border-radius: 50%; margin-top: 2px; }
         .spread-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--primary); position: absolute; top: 4px; right: 4px; }
-        
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(26,115,232,0.4); } 70% { box-shadow: 0 0 0 6px rgba(26,115,232,0); } 100% { box-shadow: 0 0 0 0 rgba(26,115,232,0); } }
 
+        /* Split Action Buttons */
+        .btn-row { display: flex; gap: 12px; margin-bottom: 16px; width: 100%; box-sizing: border-box; }
+        .action-btn { flex: 1; display: flex; flex-direction: column; align-items: flex-start; padding: 12px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border); cursor: pointer; box-sizing: border-box; }
+
+        /* Metrics */
         .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
         .sum-val { font-size: 20px; font-weight: 700; margin-top: 4px; display: block; }
-        .date-range { font-size: 10px; color: var(--text-light); display: block; margin-top: 4px; }
         .progress-container { height: 6px; background: var(--border); border-radius: 3px; margin-top: 10px; overflow: hidden; }
         .progress-bar { height: 100%; width: 0%; transition: width 0.5s ease; }
 
+        /* Input Form */
         .input-group { margin-bottom: 15px; width: 100%; box-sizing: border-box; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; text-transform: uppercase; }
         input, select { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 16px; background: var(--card-bg); color: var(--text); outline: none; box-sizing: border-box; }
         
         .quick-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-        .tag { padding: 6px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 16px; font-size: 12px; cursor: pointer; color: var(--text-light); transition: 0.2s; }
-        .tag:active { background: var(--primary); color: white; transform: scale(0.95); }
+        .tag { padding: 6px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 16px; font-size: 12px; cursor: pointer; color: var(--text-light); }
 
+        /* List Styling */
+        .cat-sum-item { display: inline-block; padding: 2px 8px; background: var(--bg); border-radius: 6px; font-size: 11px; margin-right: 6px; margin-bottom: 10px; color: var(--text-light); border: 1px solid var(--border); }
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
         .btn-main { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .del-btn { color: var(--danger); opacity: 0.3; padding: 10px; border: none; background: none; font-size: 18px; }
 
         #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--card-bg); margin: 15% auto; width: 88%; padding: 24px; border-radius: 20px; max-height: 75vh; overflow-y: auto; }
+        .modal-content { background: var(--card-bg); margin: 15% auto; width: 88%; padding: 24px; border-radius: 20px; max-height: 75vh; overflow-y: auto; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -67,6 +76,20 @@
     </div>
 </div>
 
+<div class="card health-card">
+    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+        <span>MONTHLY HEALTH</span>
+        <span id="healthPct">0%</span>
+    </div>
+    <div class="ratio-bar">
+        <div id="fixedBar" class="ratio-fill" style="background:var(--primary);"></div>
+        <div id="dailyBar" class="ratio-fill" style="background:var(--warning);"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-light); font-weight:bold;">
+        <span>● FIXED</span><span>● DAILY</span><span>○ REMAINING</span>
+    </div>
+</div>
+
 <div class="card" style="padding: 15px;">
     <div class="header-row" style="margin-bottom: 15px;">
         <button onclick="changeMonth(-1)" style="border:none; background:none; color:var(--primary); font-weight:bold;">← PREV</button>
@@ -76,15 +99,25 @@
     <div class="calendar-grid" id="calendar"></div>
 </div>
 
+<div class="btn-row">
+    <div class="action-btn" onclick="showModal('fixed')">
+        <small style="font-weight:700; color:var(--text-light); font-size:10px;">FIXED EXPENSES</small>
+        <div class="mono" id="fixedTotalBtn" style="color:var(--primary); font-weight:bold; font-size:16px;">$0.00</div>
+    </div>
+    <div class="action-btn" onclick="showModal('income')">
+        <small style="font-weight:700; color:var(--text-light); font-size:10px;">TOTAL INCOME</small>
+        <div class="mono" id="incomeTotalBtn" style="color:var(--success); font-weight:bold; font-size:16px;">$0.00</div>
+    </div>
+</div>
+
 <div class="summary-grid">
     <div class="card" style="margin-bottom:0;">
         <small style="color:var(--text-light); font-weight:bold;">TODAY</small>
-        <span id="dayTotal" class="sum-val mono"><span class="currency">$</span>0.00</span>
+        <span id="dayTotal" class="sum-val mono">$0.00</span>
     </div>
     <div class="card" style="margin-bottom:0; position:relative; overflow:hidden;">
         <small style="color:var(--text-light); font-weight:bold;">WEEK SURPLUS</small>
-        <span id="weekSurplus" class="sum-val mono" style="color:var(--success);"><span class="currency">$</span>0.00</span>
-        <span id="weekDates" class="date-range">...</span>
+        <span id="weekSurplus" class="sum-val mono" style="color:var(--success);">$0.00</span>
         <div class="progress-container"><div id="weekProgress" class="progress-bar"></div></div>
     </div>
 </div>
@@ -109,26 +142,26 @@
     <div class="input-group">
         <label>Note</label>
         <input type="text" id="desc" placeholder="Details...">
-        <div class="quick-tags" id="tagContainer">
-            </div>
+        <div class="quick-tags" id="tagContainer"></div>
     </div>
     <button class="btn-main" onclick="addEntry()">SAVE RECORD</button>
 </div>
 
 <div class="card">
     <h4 style="margin:0 0 15px 0; font-size:14px; color:var(--text-light);">DAILY DETAILS</h4>
+    <div id="daySumArea"></div>
     <div id="dayList"></div>
 </div>
 
-<div style="display:flex; gap:10px; margin: 20px 0 40px 0;">
-    <button onclick="showModal('fixed')" class="card" style="flex:1; padding:10px; font-size:11px; margin:0; cursor:pointer; text-align:center;">FIXED DETAIL</button>
-    <button onclick="showModal('income')" class="card" style="flex:1; padding:10px; font-size:11px; margin:0; cursor:pointer; text-align:center;">INCOME DETAIL</button>
+<div style="display:flex; gap:10px; margin-bottom: 40px; padding: 0 5px;">
+    <button class="tag" style="flex:1; padding:12px;" onclick="exportData()">Export Data</button>
+    <button class="tag" style="flex:1; padding:12px;" onclick="document.getElementById('importFile').click()">Import Data</button>
+    <input type="file" id="importFile" style="display:none" onchange="importData(event)">
 </div>
 
 <div id="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="modalTitle" style="margin-top:0;">Analysis</h3>
-        <div id="ratioArea" style="margin-bottom:20px;"></div>
+        <h3 id="modalTitle" style="margin-top:0;">Details</h3>
         <div id="modalList"></div>
         <button class="btn-main" onclick="closeModal()" style="background:var(--bg); color:var(--text); margin-top:20px;">CLOSE</button>
     </div>
@@ -145,23 +178,21 @@
         fixed: ['Rent', 'Electricity', 'Internet', 'Subscriptions', 'Donations'],
         income: ['BB', 'YC'],
         grocery: ['Market', 'BigC', 'Lotus', 'Makro'],
-        other: ['Shopping', 'Laundry', 'Travel']
+        other: ['Shopping', 'Travel']
     };
 
     function init() {
-        document.getElementById('dailyLimitInput').value = db.dailyLimit || 20;
+        document.getElementById('dailyLimitInput').value = db.dailyLimit;
         updateQuickTags();
         renderCalendar();
         updateDisplay();
-        updateMonthTotals();
     }
 
     function updateQuickTags() {
         const cat = document.getElementById('cat').value;
         const container = document.getElementById('tagContainer');
         container.innerHTML = '';
-        const tags = tagMap[cat] || [];
-        tags.forEach(tag => {
+        (tagMap[cat] || []).forEach(tag => {
             container.innerHTML += `<div class="tag" onclick="quickFill('${tag}')">${tag}</div>`;
         });
     }
@@ -194,16 +225,8 @@
         for(let d=1; d<=lastDate; d++) {
             const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
             const spent = getDaySpent(dateStr);
-            const statusClass = spent > db.dailyLimit ? 'danger' : (spent > 0 ? 'success' : '');
             const hasSpread = db.entries.some(e => e.cat === 'grocery' && Math.ceil((new Date(dateStr) - new Date(e.date)) / 86400000) > 0 && Math.ceil((new Date(dateStr) - new Date(e.date)) / 86400000) < 7);
-            
-            cal.innerHTML += `
-                <div class="day ${dateStr===selectedDate?'selected':''} ${dateStr===todayStr?'today':''}" onclick="selectDate('${dateStr}')">
-                    ${d}
-                    <div class="day-amt mono" style="color:${dateStr===selectedDate?'white': (spent > db.dailyLimit ? 'var(--danger)' : 'var(--text-light)')}">${spent>0?Math.round(spent):''}</div>
-                    ${hasSpread ? '<div class="spread-dot"></div>' : ''}
-                    ${spent > 0 ? `<div class="dot" style="background:var(--${statusClass})"></div>` : ''}
-                </div>`;
+            cal.innerHTML += `<div class="day ${dateStr===selectedDate?'selected':''} ${dateStr===todayStr?'today':''}" onclick="selectDate('${dateStr}')">${d}<div class="day-amt mono">${spent>0?Math.round(spent):''}</div>${hasSpread?'<div class="spread-dot"></div>':''}</div>`;
         }
     }
 
@@ -211,87 +234,91 @@
 
     function addEntry() {
         const amt = parseFloat(document.getElementById('amt').value);
-        if(!amt || amt <= 0) return;
+        if(!amt) return;
         db.entries.push({ id: Date.now(), date: selectedDate, cat: document.getElementById('cat').value, amt, desc: document.getElementById('desc').value || document.getElementById('cat').value });
         localStorage.setItem('budget_v9', JSON.stringify(db));
         document.getElementById('amt').value = ''; document.getElementById('desc').value = '';
-        document.activeElement.blur();
-        renderCalendar(); updateDisplay(); updateMonthTotals();
+        renderCalendar(); updateDisplay();
     }
 
     function deleteEntry(id) {
         db.entries = db.entries.filter(e => e.id !== id);
         localStorage.setItem('budget_v9', JSON.stringify(db));
-        renderCalendar(); updateDisplay(); updateMonthTotals();
+        renderCalendar(); updateDisplay();
     }
 
     function updateDisplay() {
+        const prefix = `${viewDate.getFullYear()}-${String(viewDate.getMonth()+1).padStart(2,'0')}`;
+        let income = 0, fixed = 0, daily = 0;
+        db.entries.forEach(e => {
+            if(e.date.startsWith(prefix)) {
+                if(e.cat === 'income') income += e.amt;
+                else if(e.cat === 'fixed') fixed += e.amt;
+                else daily += e.amt;
+            }
+        });
+
+        // Top Bar
+        const totalPct = income > 0 ? ((fixed + daily) / income * 100).toFixed(1) : 0;
+        document.getElementById('healthPct').innerText = totalPct + '%';
+        document.getElementById('fixedBar').style.width = income > 0 ? Math.min((fixed / income * 100), 100) + '%' : '0%';
+        document.getElementById('dailyBar').style.width = income > 0 ? Math.min((daily / income * 100), (100 - (fixed/income*100))) + '%' : '0%';
+        document.getElementById('fixedTotalBtn').innerText = `$${fixed.toFixed(2)}`;
+        document.getElementById('incomeTotalBtn').innerText = `$${income.toFixed(2)}`;
+
+        // List and Summary
         const list = document.getElementById('dayList'); list.innerHTML = '';
+        const sumArea = document.getElementById('daySumArea'); sumArea.innerHTML = '';
         const dayEntries = db.entries.filter(e => e.date === selectedDate);
-        if(dayEntries.length === 0) {
-            list.innerHTML = `<div class="empty-state">No records for today.</div>`;
-        } else {
-            dayEntries.forEach(e => {
-                list.innerHTML += `<div class="list-item">
-                    <div><div style="font-weight:bold; font-size:15px;">${e.desc}</div><small style="color:var(--text-light); text-transform:uppercase; font-size:10px;">${e.cat}</small></div>
-                    <div style="display:flex; align-items:center;"><span class="mono" style="font-weight:bold;">$${e.amt.toFixed(2)}</span><button class="del-btn" onclick="deleteEntry(${e.id})">×</button></div>
-                </div>`;
-            });
-        }
-        document.getElementById('dayTotal').innerHTML = `<span class="currency">$</span>${getDaySpent(selectedDate).toFixed(2)}`;
-        calculateWeeklySurplus();
-    }
-
-    function calculateWeeklySurplus() {
+        
+        let catSums = {};
+        dayEntries.forEach(e => {
+            catSums[e.cat] = (catSums[e.cat] || 0) + e.amt;
+            list.innerHTML += `<div class="list-item"><div><div style="font-weight:bold; font-size:15px;">${e.desc}</div><small style="color:var(--text-light); text-transform:uppercase; font-size:10px;">${e.cat}</small></div><div style="display:flex; align-items:center;"><span class="mono" style="font-weight:bold;">$${e.amt.toFixed(2)}</span><button class="del-btn" onclick="deleteEntry(${e.id})">×</button></div></div>`;
+        });
+        
+        Object.keys(catSums).forEach(c => {
+            sumArea.innerHTML += `<span class="cat-sum-item"><b>${c.toUpperCase()}:</b> $${catSums[c].toFixed(2)}</span>`;
+        });
+        
+        document.getElementById('dayTotal').innerText = `$${getDaySpent(selectedDate).toFixed(2)}`;
+        
+        // Week
         const curr = new Date(selectedDate);
-        const day = curr.getDay() || 7;
-        const mon = new Date(curr.setDate(curr.getDate() - day + 1));
-        const sun = new Date(new Date(mon).setDate(mon.getDate() + 6));
-        document.getElementById('weekDates').innerText = `${mon.toLocaleDateString('en-US', {month:'short', day:'numeric'})} - ${sun.toLocaleDateString('en-US', {month:'short', day:'numeric'})}`;
+        const mon = new Date(curr.setDate(curr.getDate() - (curr.getDay() || 7) + 1));
         let weekSpent = 0;
-        let tempDate = new Date(mon);
-        for(let i=0; i<7; i++) {
-            weekSpent += getDaySpent(tempDate.toISOString().split('T')[0]);
-            tempDate.setDate(tempDate.getDate() + 1);
-        }
+        for(let i=0; i<7; i++) { weekSpent += getDaySpent(new Date(mon).toISOString().split('T')[0]); mon.setDate(mon.getDate() + 1); }
         const limit = db.dailyLimit * 7;
-        const surplus = limit - weekSpent;
-        const pct = Math.min((weekSpent / limit) * 100, 100);
-        const el = document.getElementById('weekSurplus');
-        el.innerHTML = `<span class="currency">$</span>${surplus.toFixed(2)}`;
-        el.style.color = surplus < 0 ? 'var(--danger)' : 'var(--success)';
-        const bar = document.getElementById('weekProgress');
-        bar.style.width = pct + '%';
-        bar.style.background = pct > 90 ? 'var(--danger)' : (pct > 70 ? 'var(--warning)' : 'var(--success)');
+        document.getElementById('weekSurplus').innerText = `$${(limit - weekSpent).toFixed(2)}`;
+        document.getElementById('weekProgress').style.width = Math.min((weekSpent/limit)*100, 100) + '%';
     }
 
-    function updateMonthTotals() {} // Keeping helper functions simple
+    function exportData() {
+        const blob = new Blob([JSON.stringify(db)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = `budget_backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+    }
+
+    function importData(e) {
+        const reader = new FileReader();
+        reader.onload = (event) => { db = JSON.parse(event.target.result); localStorage.setItem('budget_v9', JSON.stringify(db)); init(); };
+        reader.readAsText(e.target.files[0]);
+    }
 
     function showModal(type) {
         const list = document.getElementById('modalList'); list.innerHTML = '';
-        const ratioArea = document.getElementById('ratioArea'); ratioArea.innerHTML = '';
         const prefix = `${viewDate.getFullYear()}-${String(viewDate.getMonth()+1).padStart(2,'0')}`;
-        let iTotal = 0, fTotal = 0;
-        db.entries.forEach(e => {
-            if(e.date.startsWith(prefix)) {
-                if(e.cat === 'income') iTotal += e.amt;
-                if(e.cat === 'fixed') fTotal += e.amt;
-            }
-        });
-        if(type === 'fixed' && iTotal > 0) {
-            const pct = ((fTotal / iTotal) * 100).toFixed(1);
-            ratioArea.innerHTML = `<div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:5px;"><span>Fixed / Income Ratio</span><span>${pct}%</span></div><div style="height:8px; background:var(--border); border-radius:4px; overflow:hidden;"><div style="height:100%; width:${pct}%; background:var(--primary)"></div></div>`;
-        }
-        document.getElementById('modalTitle').innerText = type === 'fixed' ? 'Monthly Fixed' : 'Monthly Income';
-        db.entries.filter(e => e.cat === type && e.date.startsWith(prefix)).forEach(e => {
+        document.getElementById('modalTitle').innerText = type === 'fixed' ? 'Fixed Expenses' : 'Income Records';
+        db.entries.filter(e => e.cat === type && e.date.startsWith(prefix)).sort((a,b)=>b.date.localeCompare(a.date)).forEach(e => {
             list.innerHTML += `<div class="list-item"><span>${e.date.split('-')[2]}: ${e.desc}</span><strong class="mono">$${e.amt.toFixed(2)}</strong></div>`;
         });
         document.getElementById('modal').style.display = 'block';
     }
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
-    function changeMonth(s) { viewDate.setMonth(viewDate.getMonth() + s); renderCalendar(); }
-    function updateLimit() { db.dailyLimit = parseFloat(document.getElementById('dailyLimitInput').value) || 20; calculateWeeklySurplus(); renderCalendar(); }
+    function changeMonth(s) { viewDate.setMonth(viewDate.getMonth() + s); renderCalendar(); updateDisplay(); }
+    function updateLimit() { db.dailyLimit = parseFloat(document.getElementById('dailyLimitInput').value) || 20; updateDisplay(); }
     
     init();
 </script>
