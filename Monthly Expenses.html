@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Budget Pro V8</title>
+    <title>Smart Budget Pro V8.1</title>
     <style>
         :root { 
             --primary: #1a73e8; --success: #28a745; --danger: #d93025; --bg: #f8f9fa; 
@@ -15,12 +15,10 @@
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: var(--text); transition: 0.3s; }
         .card { background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         
-        /* Layout & Nav */
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .nav-btn { background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; cursor: pointer; color: var(--text); }
         .action-btn { background: var(--card-bg); border: 1px solid var(--border); padding: 14px; border-radius: 8px; width: 100%; margin-bottom: 8px; font-weight: bold; cursor: pointer; font-size: 15px; display: flex; justify-content: space-between; color: var(--text); }
 
-        /* Calendar */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
         .day-header { font-size: 11px; text-align: center; opacity: 0.7; padding: 5px 0; }
         .day { aspect-ratio: 1; border-radius: 6px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; position: relative; }
@@ -31,18 +29,15 @@
         .day-amt { font-size: 9px; opacity: 0.9; }
         .spread-indicator { width: 60%; height: 2px; background: var(--primary); position: absolute; bottom: 3px; border-radius: 2px; opacity: 0.5; }
 
-        /* Input */
         .input-stack { display: flex; flex-direction: column; gap: 10px; }
         label { font-size: 11px; color: var(--primary); font-weight: bold; }
         input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 16px; background: var(--card-bg); color: var(--text); }
         .save-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 5px; }
 
-        /* List & Delete */
         .group-title { background: rgba(26, 115, 232, 0.1); padding: 8px 12px; font-size: 13px; font-weight: bold; margin-top: 12px; border-radius: 6px; color: var(--primary); }
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 15px; }
         .del-btn { color: var(--danger); border: none; background: none; font-size: 18px; padding: 0 5px; cursor: pointer; margin-left: 10px; }
 
-        /* Footer Buttons */
         .footer-tools { display: flex; gap: 10px; margin-top: 20px; opacity: 0.7; }
         .tool-btn { flex: 1; font-size: 11px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); color: var(--text); }
         
@@ -54,7 +49,7 @@
 
 <div class="header-row">
     <div style="font-size: 14px; font-weight: bold;">Daily Limit: <span style="color: var(--primary);">$</span><input type="number" id="dailyLimitInput" inputmode="decimal" style="width:60px; padding:4px; margin-left:5px;" onchange="updateLimit()"></div>
-    <div id="statusInfo" style="font-size: 11px; opacity: 0.7;">V8 Stable</div>
+    <div id="statusInfo" style="font-size: 11px; opacity: 0.7;">V8.1 Stable</div>
 </div>
 
 <div class="card">
@@ -150,8 +145,7 @@
             if (e.date === dateStr && ['food', 'transport', 'other'].includes(e.cat)) total += e.amt;
             if (e.cat === 'grocery') {
                 const purchaseDate = new Date(e.date);
-                const diffTime = targetDate - purchaseDate;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const diffDays = Math.ceil((targetDate - purchaseDate) / (1000 * 60 * 60 * 24));
                 if (diffDays >= 0 && diffDays < 7) total += (e.amt / 7);
             }
         });
@@ -230,7 +224,7 @@
                 list.innerHTML += `<div class="group-title">${cats[key]}</div>`;
                 groups[key].forEach(e => {
                     list.innerHTML += `<div class="list-item">
-                        <span>${e.desc} <small style="opacity:0.6">($${e.amt})</small></span>
+                        <span>${e.desc}</span>
                         <div><strong>$${e.amt.toFixed(2)}</strong><button class="del-btn" onclick="deleteEntry(${e.id})">×</button></div>
                     </div>`;
                 });
