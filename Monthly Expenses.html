@@ -3,58 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget Tracker V7</title>
+    <title>Smart Budget Pro V8</title>
     <style>
-        :root { --primary: #1a73e8; --success: #28a745; --danger: #d93025; --bg: #f8f9fa; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: #3c4043; }
-        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        :root { 
+            --primary: #1a73e8; --success: #28a745; --danger: #d93025; --bg: #f8f9fa; 
+            --card-bg: #ffffff; --text: #3c4043; --border: #dadce0;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #202124; --card-bg: #2d2e30; --text: #e8eaed; --border: #3c4043; }
+        }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: var(--text); transition: 0.3s; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         
-        /* Navigation */
+        /* Layout & Nav */
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .nav-btn { background: #fff; border: 1px solid #dadce0; border-radius: 4px; padding: 8px 12px; cursor: pointer; }
-        .action-btn { background: #f1f3f4; border: 1px solid #dadce0; padding: 14px; border-radius: 8px; width: 100%; margin-bottom: 8px; font-weight: bold; cursor: pointer; font-size: 15px; text-align: left; display: flex; justify-content: space-between; }
-        .action-btn span.amt { color: var(--primary); }
-
-        /* Limit Setting - Fixed spacing */
-        .limit-setting { display: flex; align-items: center; justify-content: space-between; background: #e8f0fe; padding: 10px 15px; border-radius: 8px; margin-bottom: 12px; font-size: 14px; }
-        .limit-setting div { display: flex; align-items: center; gap: 8px; } /* Added gap for $ and input */
-        .limit-setting input { width: 70px; padding: 5px; text-align: center; border: 1px solid #1a73e8; border-radius: 4px; font-weight: bold; }
+        .nav-btn { background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; cursor: pointer; color: var(--text); }
+        .action-btn { background: var(--card-bg); border: 1px solid var(--border); padding: 14px; border-radius: 8px; width: 100%; margin-bottom: 8px; font-weight: bold; cursor: pointer; font-size: 15px; display: flex; justify-content: space-between; color: var(--text); }
 
         /* Calendar */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .day-header { font-size: 11px; text-align: center; color: #70757a; padding: 5px 0; }
-        .day { aspect-ratio: 1; border-radius: 6px; border: 1px solid #f1f3f4; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; }
-        .day.green { background: #e6f4ea; }
-        .day.red { background: #fce8e6; }
+        .day-header { font-size: 11px; text-align: center; opacity: 0.7; padding: 5px 0; }
+        .day { aspect-ratio: 1; border-radius: 6px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; position: relative; }
+        .day.green { background: rgba(40, 167, 69, 0.15); }
+        .day.red { background: rgba(217, 48, 37, 0.15); }
         .day.today { border: 2px solid var(--primary) !important; font-weight: bold; }
         .day.selected { background: var(--primary) !important; color: white !important; }
-        .day-amt { font-size: 9px; opacity: 0.8; }
+        .day-amt { font-size: 9px; opacity: 0.9; }
+        .spread-indicator { width: 60%; height: 2px; background: var(--primary); position: absolute; bottom: 3px; border-radius: 2px; opacity: 0.5; }
 
-        /* Summary Area */
-        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .summary-item { padding: 12px; border-radius: 8px; background: #fff; border: 1px solid #eee; }
-        .val { font-size: 1.3em; font-weight: bold; display: block; margin-top: 5px; }
-
-        /* Input Stack */
-        .input-stack { display: flex; flex-direction: column; gap: 12px; }
-        label { font-size: 12px; color: #5f6368; margin-bottom: -8px; }
-        input, select { width: 100%; padding: 14px; border: 1px solid #dadce0; border-radius: 8px; box-sizing: border-box; font-size: 16px; background: #fff; }
+        /* Input */
+        .input-stack { display: flex; flex-direction: column; gap: 10px; }
+        label { font-size: 11px; color: var(--primary); font-weight: bold; }
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 16px; background: var(--card-bg); color: var(--text); }
         .save-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 5px; }
 
-        /* Lists */
-        .group-title { background: #f8f9fa; padding: 8px 12px; font-size: 13px; font-weight: bold; margin-top: 12px; border-radius: 6px; color: #1a73e8; border-left: 4px solid var(--primary); }
-        .list-item { display: flex; justify-content: space-between; padding: 12px 10px; border-bottom: 1px solid #f1f3f4; font-size: 15px; }
+        /* List & Delete */
+        .group-title { background: rgba(26, 115, 232, 0.1); padding: 8px 12px; font-size: 13px; font-weight: bold; margin-top: 12px; border-radius: 6px; color: var(--primary); }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 15px; }
+        .del-btn { color: var(--danger); border: none; background: none; font-size: 18px; padding: 0 5px; cursor: pointer; margin-left: 10px; }
 
-        /* Modal */
+        /* Footer Buttons */
+        .footer-tools { display: flex; gap: 10px; margin-top: 20px; opacity: 0.7; }
+        .tool-btn { flex: 1; font-size: 11px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); color: var(--text); }
+        
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; }
-        .modal-content { background: white; margin: 15% auto; width: 88%; padding: 20px; border-radius: 15px; max-height: 70%; overflow-y: auto; }
+        .modal-content { background: var(--card-bg); margin: 15% auto; width: 85%; padding: 20px; border-radius: 15px; max-height: 70%; overflow-y: auto; }
     </style>
 </head>
 <body>
 
-<div class="limit-setting">
-    <span>Daily Spending Limit:</span>
-    <div>$ <input type="number" id="dailyLimitInput" value="20" onchange="updateLimit()"></div>
+<div class="header-row">
+    <div style="font-size: 14px; font-weight: bold;">Daily Limit: <span style="color: var(--primary);">$</span><input type="number" id="dailyLimitInput" inputmode="decimal" style="width:60px; padding:4px; margin-left:5px;" onchange="updateLimit()"></div>
+    <div id="statusInfo" style="font-size: 11px; opacity: 0.7;">V8 Stable</div>
 </div>
 
 <div class="card">
@@ -67,46 +67,46 @@
 </div>
 
 <button class="action-btn" onclick="showModal('fixed')">
-    <span>Monthly Fixed Expenses</span>
+    <span>Fixed Expenses</span>
     <span class="amt" id="fixedTotalBtn">$0.00</span>
 </button>
 <button class="action-btn" onclick="showModal('income')">
-    <span>Monthly Total Income</span>
+    <span>Income</span>
     <span class="amt" id="incomeTotalBtn" style="color:var(--success)">$0.00</span>
 </button>
 
-<div class="summary-grid">
-    <div class="summary-item">
+<div class="summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+    <div class="summary-item card" style="margin-bottom:0;">
         <small>Today's Total</small>
-        <span id="dayTotal" class="val">$0.00</span>
+        <span id="dayTotal" class="val" style="font-size: 1.3em; font-weight: bold; display: block; color: var(--text);">$0.00</span>
     </div>
-    <div class="summary-item" style="border-left: 4px solid var(--success);">
+    <div class="summary-item card" style="margin-bottom:0; border-left: 4px solid var(--success);">
         <small>Weekly Surplus</small>
-        <span id="weekSurplus" class="val">$0.00</span>
+        <span id="weekSurplus" class="val" style="font-size: 1.3em; font-weight: bold; display: block; color: var(--success);">$0.00</span>
     </div>
 </div>
 
-<div class="card">
-    <h4 id="inputTitle" style="margin:0 0 15px 0;">Record for: 2026-04-20</h4>
+<div class="card" id="inputArea">
+    <h4 id="inputTitle" style="margin:0 0 15px 0;">Record: 2026-04-20</h4>
     <div class="input-stack">
         <div>
             <label>Category</label>
             <select id="cat">
                 <option value="food">Food & Dining</option>
-                <option value="transport">Transport (MRT/Grab/Bolt)</option>
-                <option value="grocery">Grocery (Spread 7 days)</option>
-                <option value="fixed">Fixed Expense (Rent/Bills)</option>
-                <option value="income">Income (Salary/Gig)</option>
+                <option value="transport">Transport</option>
+                <option value="grocery">Grocery (Spread 7 Days)</option>
+                <option value="fixed">Fixed Expense</option>
+                <option value="income">Income</option>
                 <option value="other">Other</option>
             </select>
         </div>
         <div>
             <label>Amount ($)</label>
-            <input type="number" id="amt" placeholder="0.00">
+            <input type="number" id="amt" inputmode="decimal" placeholder="0.00">
         </div>
         <div>
             <label>Note</label>
-            <input type="text" id="desc" placeholder="Details (e.g., BTS, Lunch)">
+            <input type="text" id="desc" placeholder="Details...">
         </div>
         <button class="save-btn" onclick="addEntry()">Save Record</button>
     </div>
@@ -117,21 +117,24 @@
     <div id="dayList"></div>
 </div>
 
+<div class="footer-tools">
+    <button class="tool-btn" onclick="exportData()">Export Backup</button>
+    <button class="tool-btn" onclick="document.getElementById('importFile').click()">Import Data</button>
+    <input type="file" id="importFile" style="display:none" onchange="importData(event)">
+</div>
+
 <div id="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="modalTitle" style="margin-top:0">Details</h3>
+        <h3 id="modalTitle">Details</h3>
         <div id="modalList"></div>
-        <button onclick="closeModal()" style="margin-top:20px; width:100%; padding:15px; background:#f1f3f4; border:none; border-radius:8px; font-weight:bold;">Close</button>
+        <button onclick="closeModal()" style="margin-top:20px; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold;">Close</button>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('budget_v7')) || { entries: [], dailyLimit: 20 };
+    let db = JSON.parse(localStorage.getItem('budget_v8')) || { entries: [], dailyLimit: 20 };
     let viewDate = new Date();
     let selectedDate = new Date().toISOString().split('T')[0];
-
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const categories = { food: 'Food', transport: 'Transport', grocery: 'Grocery (Spread)', other: 'Other', fixed: 'Fixed Expense', income: 'Income' };
 
     function init() {
         document.getElementById('dailyLimitInput').value = db.dailyLimit || 20;
@@ -140,11 +143,36 @@
         updateMonthTotals();
     }
 
+    function getDaySpent(dateStr) {
+        let total = 0;
+        const targetDate = new Date(dateStr);
+        db.entries.forEach(e => {
+            if (e.date === dateStr && ['food', 'transport', 'other'].includes(e.cat)) total += e.amt;
+            if (e.cat === 'grocery') {
+                const purchaseDate = new Date(e.date);
+                const diffTime = targetDate - purchaseDate;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays >= 0 && diffDays < 7) total += (e.amt / 7);
+            }
+        });
+        return total;
+    }
+
+    function hasSpread(dateStr) {
+        const targetDate = new Date(dateStr);
+        return db.entries.some(e => {
+            if (e.cat !== 'grocery') return false;
+            const diffDays = Math.ceil((targetDate - new Date(e.date)) / (1000 * 60 * 60 * 24));
+            return diffDays > 0 && diffDays < 7;
+        });
+    }
+
     function renderCalendar() {
         const cal = document.getElementById('calendar'); cal.innerHTML = '';
         ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(l => cal.innerHTML += `<div class="day-header">${l}</div>`);
         const y = viewDate.getFullYear(), m = viewDate.getMonth();
-        document.getElementById('monthTitle').innerText = `${monthNames[m]} ${y}`;
+        document.getElementById('monthTitle').innerText = `${new Intl.DateTimeFormat('en-US', {month:'long'}).format(viewDate)} ${y}`;
+        
         const firstDay = new Date(y, m, 1).getDay();
         const lastDate = new Date(y, m + 1, 0).getDate();
         const todayStr = new Date().toISOString().split('T')[0];
@@ -153,81 +181,82 @@
         for(let d=1; d<=lastDate; d++) {
             const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
             const spent = getDaySpent(dateStr);
-            const limit = db.dailyLimit || 20;
-            const status = spent > limit ? 'red' : (spent > 0 ? 'green' : '');
-            cal.innerHTML += `<div class="day ${status} ${dateStr===selectedDate?'selected':''} ${dateStr===todayStr?'today':''}" onclick="selectDate('${dateStr}')">${d}<span class="day-amt">${spent>0?'$'+spent.toFixed(0):''}</span></div>`;
+            const status = spent > db.dailyLimit ? 'red' : (spent > 0 ? 'green' : '');
+            const isSpread = hasSpread(dateStr);
+            cal.innerHTML += `
+                <div class="day ${status} ${dateStr===selectedDate?'selected':''} ${dateStr===todayStr?'today':''}" onclick="selectDate('${dateStr}')">
+                    ${d}<span class="day-amt">${spent>0?'$'+Math.round(spent):''}</span>
+                    ${isSpread ? '<div class="spread-indicator"></div>' : ''}
+                </div>`;
         }
     }
 
-    function selectDate(d) { selectedDate = d; document.getElementById('inputTitle').innerText = `Record for: ${d}`; renderCalendar(); updateDisplay(); }
+    function selectDate(d) { 
+        selectedDate = d; 
+        document.getElementById('inputTitle').innerText = `Record: ${d}`; 
+        renderCalendar(); 
+        updateDisplay(); 
+    }
 
     function addEntry() {
         const amt = parseFloat(document.getElementById('amt').value);
-        const cat = document.getElementById('cat').value;
-        const desc = document.getElementById('desc').value || categories[cat];
-        if(!amt) return;
-        db.entries.push({ date: selectedDate, cat, amt, desc });
-        localStorage.setItem('budget_v7', JSON.stringify(db));
+        if(!amt || amt <= 0) return alert("Please enter a valid amount");
+        const entry = { id: Date.now(), date: selectedDate, cat: document.getElementById('cat').value, amt, desc: document.getElementById('desc').value || document.getElementById('cat').value };
+        db.entries.push(entry);
+        saveAndRefresh();
         document.getElementById('amt').value = ''; document.getElementById('desc').value = '';
+        document.getElementById('dayList').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function deleteEntry(id) {
+        db.entries = db.entries.filter(e => e.id !== id);
+        saveAndRefresh();
+    }
+
+    function saveAndRefresh() {
+        localStorage.setItem('budget_v8', JSON.stringify(db));
         renderCalendar(); updateDisplay(); updateMonthTotals();
-    }
-
-    function updateLimit() {
-        db.dailyLimit = parseFloat(document.getElementById('dailyLimitInput').value);
-        localStorage.setItem('budget_v7', JSON.stringify(db));
-        renderCalendar(); updateDisplay();
-    }
-
-    function getDaySpent(dateStr) {
-        let total = 0;
-        db.entries.forEach(e => {
-            if(e.date === dateStr && (e.cat === 'food' || e.cat === 'transport' || e.cat === 'other')) total += e.amt;
-            if(e.cat === 'grocery') {
-                const diff = (new Date(dateStr) - new Date(e.date)) / 86400000;
-                if(diff >= 0 && diff < 7) total += (e.amt / 7);
-            }
-        });
-        return total;
     }
 
     function updateDisplay() {
         const list = document.getElementById('dayList'); list.innerHTML = '';
         const groups = { food: [], transport: [], grocery: [], other: [], fixed: [], income: [] };
-        const totals = { food: 0, transport: 0, other: 0, grocery: 0, fixed: 0, income: 0 };
+        const cats = { food: 'Food', transport: 'Transport', grocery: 'Grocery', other: 'Other', fixed: 'Fixed', income: 'Income' };
         
-        db.entries.filter(e => e.date === selectedDate).forEach(e => {
-            if(groups[e.cat]) groups[e.cat].push(e);
-            totals[e.cat] += e.amt;
-        });
+        db.entries.filter(e => e.date === selectedDate).forEach(e => groups[e.cat].push(e));
 
-        for (let key in categories) {
+        for (let key in cats) {
             if (groups[key].length > 0) {
-                const sumLabel = totals[key] > 0 ? ` (Subtotal: $${totals[key].toFixed(2)})` : "";
-                list.innerHTML += `<div class="group-title">${categories[key]}${sumLabel}</div>`;
+                list.innerHTML += `<div class="group-title">${cats[key]}</div>`;
                 groups[key].forEach(e => {
-                    list.innerHTML += `<div class="list-item"><span>${e.desc}</span><strong>$${e.amt.toFixed(2)}</strong></div>`;
+                    list.innerHTML += `<div class="list-item">
+                        <span>${e.desc} <small style="opacity:0.6">($${e.amt})</small></span>
+                        <div><strong>$${e.amt.toFixed(2)}</strong><button class="del-btn" onclick="deleteEntry(${e.id})">×</button></div>
+                    </div>`;
                 });
             }
         }
         document.getElementById('dayTotal').innerText = `$${getDaySpent(selectedDate).toFixed(2)}`;
+        calculateWeeklySurplus();
+    }
 
+    function calculateWeeklySurplus() {
         const curr = new Date(selectedDate);
         const day = curr.getDay() || 7;
         const mon = new Date(curr.setDate(curr.getDate() - day + 1));
         let weekSpent = 0;
         for(let i=0; i<7; i++) {
-            weekSpent += getDaySpent(new Date(mon).toISOString().split('T')[0]);
+            weekSpent += getDaySpent(mon.toISOString().split('T')[0]);
             mon.setDate(mon.getDate() + 1);
         }
         const surplus = (db.dailyLimit * 7) - weekSpent;
-        const sEl = document.getElementById('weekSurplus');
-        sEl.innerText = `$${surplus.toFixed(2)}`;
-        sEl.style.color = surplus < 0 ? 'var(--danger)' : 'var(--success)';
+        const el = document.getElementById('weekSurplus');
+        el.innerText = `$${surplus.toFixed(2)}`;
+        el.style.color = surplus < 0 ? 'var(--danger)' : 'var(--success)';
     }
 
     function updateMonthTotals() {
-        const y = viewDate.getFullYear(), m = viewDate.getMonth() + 1;
-        const prefix = `${y}-${String(m).padStart(2,'0')}`;
+        const prefix = `${viewDate.getFullYear()}-${String(viewDate.getMonth()+1).padStart(2,'0')}`;
         let fTotal = 0, iTotal = 0;
         db.entries.forEach(e => {
             if(e.date.startsWith(prefix)) {
@@ -239,22 +268,39 @@
         document.getElementById('incomeTotalBtn').innerText = `$${iTotal.toFixed(2)}`;
     }
 
+    function exportData() {
+        const blob = new Blob([JSON.stringify(db)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `budget_backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+    }
+
+    function importData(event) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            try {
+                db = JSON.parse(e.target.result);
+                saveAndRefresh();
+                alert("Import Successful!");
+            } catch { alert("Invalid File"); }
+        };
+        reader.readAsText(event.target.files[0]);
+    }
+
     function showModal(type) {
         const list = document.getElementById('modalList'); list.innerHTML = '';
-        const y = viewDate.getFullYear(), m = viewDate.getMonth() + 1;
-        document.getElementById('modalTitle').innerText = type === 'fixed' ? 'Monthly Fixed Expenses' : 'Monthly Income Details';
-        
-        let total = 0;
-        db.entries.filter(e => e.cat === type && e.date.startsWith(`${y}-${String(m).padStart(2,'0')}`)).forEach(e => {
-            total += e.amt;
-            list.innerHTML += `<div class="list-item"><span>Day ${e.date.split('-')[2]}: ${e.desc}</span><strong>$${e.amt.toFixed(2)}</strong></div>`;
+        const prefix = `${viewDate.getFullYear()}-${String(viewDate.getMonth()+1).padStart(2,'0')}`;
+        document.getElementById('modalTitle').innerText = type === 'fixed' ? 'Fixed Expenses' : 'Income Details';
+        db.entries.filter(e => e.cat === type && e.date.startsWith(prefix)).forEach(e => {
+            list.innerHTML += `<div class="list-item"><span>${e.date.split('-')[2]}: ${e.desc}</span><strong>$${e.amt.toFixed(2)}</strong></div>`;
         });
-        list.innerHTML += `<div class="group-title" style="text-align:right; border:none; background:none; color:#333;">Total: $${total.toFixed(2)}</div>`;
         document.getElementById('modal').style.display = 'block';
     }
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
-    function changeMonth(s) { viewDate.setMonth(viewDate.getMonth() + s); renderCalendar(); updateDisplay(); updateMonthTotals(); }
+    function changeMonth(s) { viewDate.setMonth(viewDate.getMonth() + s); renderCalendar(); updateMonthTotals(); }
+    function updateLimit() { db.dailyLimit = parseFloat(document.getElementById('dailyLimitInput').value) || 20; saveAndRefresh(); }
     
     init();
 </script>
