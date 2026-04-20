@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Smart Budget Pro V9.1</title>
+    <title>Smart Budget Pro V9.2</title>
     <style>
         :root { 
             --primary: #1a73e8; --success: #34a853; --warning: #fbbc04; --danger: #ea4335;
@@ -14,8 +14,8 @@
             :root { --bg: #121212; --card-bg: #1e1e1e; --text: #e8eaed; --text-light: #9aa0a6; --border: #3c4043; }
         }
 
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: var(--text); line-height: 1.5; transition: all 0.3s ease; }
-        .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: var(--text); line-height: 1.5; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); box-sizing: border-box; }
         
         .mono { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }
         .currency { font-size: 0.6em; margin-right: 2px; vertical-align: baseline; opacity: 0.7; }
@@ -41,23 +41,17 @@
         .progress-container { height: 6px; background: var(--border); border-radius: 3px; margin-top: 10px; overflow: hidden; }
         .progress-bar { height: 100%; width: 0%; transition: width 0.5s ease; }
 
-        .input-group { margin-bottom: 15px; }
+        .input-group { margin-bottom: 15px; width: 100%; box-sizing: border-box; }
         .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; text-transform: uppercase; }
-        input, select { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 16px; background: var(--card-bg); color: var(--text); outline: none; }
+        input, select { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 16px; background: var(--card-bg); color: var(--text); outline: none; box-sizing: border-box; }
         
         .quick-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
         .tag { padding: 6px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 16px; font-size: 12px; cursor: pointer; color: var(--text-light); transition: 0.2s; }
         .tag:active { background: var(--primary); color: white; transform: scale(0.95); }
 
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
-        .empty-state { text-align: center; padding: 30px 0; color: var(--text-light); font-style: italic; font-size: 14px; }
         .btn-main { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 10px; }
         .del-btn { color: var(--danger); opacity: 0.3; padding: 10px; border: none; background: none; font-size: 18px; }
-
-        .ratio-bar-wrap { margin-bottom: 20px; }
-        .ratio-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; font-weight: bold; }
-        .ratio-bar { height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; display: flex; }
-        .ratio-fill { height: 100%; }
 
         #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; backdrop-filter: blur(4px); }
         .modal-content { background: var(--card-bg); margin: 15% auto; width: 88%; padding: 24px; border-radius: 20px; max-height: 75vh; overflow-y: auto; }
@@ -82,15 +76,6 @@
     <div class="calendar-grid" id="calendar"></div>
 </div>
 
-<button class="card" style="width:100%; display:flex; border:none; margin-bottom:12px; cursor:pointer;" onclick="showModal('fixed')">
-    <div style="flex:1; text-align:left;"><small style="color:var(--text-light); font-weight:700;">FIXED EXPENSES</small></div>
-    <div class="mono" id="fixedTotalBtn" style="color:var(--primary); font-weight:bold;"><span class="currency">$</span>0.00</div>
-</button>
-<button class="card" style="width:100%; display:flex; border:none; margin-bottom:16px; cursor:pointer;" onclick="showModal('income')">
-    <div style="flex:1; text-align:left;"><small style="color:var(--text-light); font-weight:700;">TOTAL INCOME</small></div>
-    <div class="mono" id="incomeTotalBtn" style="color:var(--success); font-weight:bold;"><span class="currency">$</span>0.00</div>
-</button>
-
 <div class="summary-grid">
     <div class="card" style="margin-bottom:0;">
         <small style="color:var(--text-light); font-weight:bold;">TODAY</small>
@@ -108,7 +93,7 @@
     <h4 id="inputTitle" style="margin:0 0 15px 0; font-size:14px; opacity:0.8;">Record: 2026-04-20</h4>
     <div class="input-group">
         <label>Category</label>
-        <select id="cat">
+        <select id="cat" onchange="updateQuickTags()">
             <option value="food">🍔 Food & Dining</option>
             <option value="transport">🚕 Transport</option>
             <option value="grocery">🛒 Grocery (7D Spread)</option>
@@ -124,14 +109,8 @@
     <div class="input-group">
         <label>Note</label>
         <input type="text" id="desc" placeholder="Details...">
-        <div class="quick-tags">
-            <div class="tag" onclick="quickFill('Lunch')">Lunch</div>
-            <div class="tag" onclick="quickFill('Dinner')">Dinner</div>
-            <div class="tag" onclick="quickFill('7-11')">7-11</div>
-            <div class="tag" onclick="quickFill('Grab')">Grab</div>
-            <div class="tag" onclick="quickFill('Bolt')">Bolt</div>
-            <div class="tag" onclick="quickFill('Taxi')">Taxi</div>
-        </div>
+        <div class="quick-tags" id="tagContainer">
+            </div>
     </div>
     <button class="btn-main" onclick="addEntry()">SAVE RECORD</button>
 </div>
@@ -141,10 +120,15 @@
     <div id="dayList"></div>
 </div>
 
+<div style="display:flex; gap:10px; margin: 20px 0 40px 0;">
+    <button onclick="showModal('fixed')" class="card" style="flex:1; padding:10px; font-size:11px; margin:0; cursor:pointer; text-align:center;">FIXED DETAIL</button>
+    <button onclick="showModal('income')" class="card" style="flex:1; padding:10px; font-size:11px; margin:0; cursor:pointer; text-align:center;">INCOME DETAIL</button>
+</div>
+
 <div id="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <h3 id="modalTitle" style="margin-top:0;">Analysis</h3>
-        <div id="ratioArea" class="ratio-bar-wrap"></div>
+        <div id="ratioArea" style="margin-bottom:20px;"></div>
         <div id="modalList"></div>
         <button class="btn-main" onclick="closeModal()" style="background:var(--bg); color:var(--text); margin-top:20px;">CLOSE</button>
     </div>
@@ -155,12 +139,34 @@
     let viewDate = new Date();
     let selectedDate = new Date().toISOString().split('T')[0];
 
+    const tagMap = {
+        food: ['Breakfast', 'Lunch', 'Dinner', '7-11', 'Grab', 'Delivery'],
+        transport: ['BTS', 'MRT', 'Grab', 'Bus', 'Bolt', 'Taxi'],
+        fixed: ['Rent', 'Electricity', 'Internet', 'Subscriptions', 'Donations'],
+        income: ['BB', 'YC'],
+        grocery: ['Market', 'BigC', 'Lotus', 'Makro'],
+        other: ['Shopping', 'Laundry', 'Travel']
+    };
+
     function init() {
         document.getElementById('dailyLimitInput').value = db.dailyLimit || 20;
+        updateQuickTags();
         renderCalendar();
         updateDisplay();
         updateMonthTotals();
     }
+
+    function updateQuickTags() {
+        const cat = document.getElementById('cat').value;
+        const container = document.getElementById('tagContainer');
+        container.innerHTML = '';
+        const tags = tagMap[cat] || [];
+        tags.forEach(tag => {
+            container.innerHTML += `<div class="tag" onclick="quickFill('${tag}')">${tag}</div>`;
+        });
+    }
+
+    function quickFill(text) { document.getElementById('desc').value = text; }
 
     function getDaySpent(dateStr) {
         let total = 0;
@@ -202,7 +208,6 @@
     }
 
     function selectDate(d) { selectedDate = d; document.getElementById('inputTitle').innerText = `Record: ${d}`; renderCalendar(); updateDisplay(); }
-    function quickFill(text) { document.getElementById('desc').value = text; }
 
     function addEntry() {
         const amt = parseFloat(document.getElementById('amt').value);
@@ -224,7 +229,7 @@
         const list = document.getElementById('dayList'); list.innerHTML = '';
         const dayEntries = db.entries.filter(e => e.date === selectedDate);
         if(dayEntries.length === 0) {
-            list.innerHTML = `<div class="empty-state">No expenses today. You're doing great! ☕</div>`;
+            list.innerHTML = `<div class="empty-state">No records for today.</div>`;
         } else {
             dayEntries.forEach(e => {
                 list.innerHTML += `<div class="list-item">
@@ -260,18 +265,7 @@
         bar.style.background = pct > 90 ? 'var(--danger)' : (pct > 70 ? 'var(--warning)' : 'var(--success)');
     }
 
-    function updateMonthTotals() {
-        const prefix = `${viewDate.getFullYear()}-${String(viewDate.getMonth()+1).padStart(2,'0')}`;
-        let fTotal = 0, iTotal = 0;
-        db.entries.forEach(e => {
-            if(e.date.startsWith(prefix)) {
-                if(e.cat === 'fixed') fTotal += e.amt;
-                if(e.cat === 'income') iTotal += e.amt;
-            }
-        });
-        document.getElementById('fixedTotalBtn').innerHTML = `<span class="currency">$</span>${fTotal.toFixed(2)}`;
-        document.getElementById('incomeTotalBtn').innerHTML = `<span class="currency">$</span>${iTotal.toFixed(2)}`;
-    }
+    function updateMonthTotals() {} // Keeping helper functions simple
 
     function showModal(type) {
         const list = document.getElementById('modalList'); list.innerHTML = '';
@@ -286,19 +280,17 @@
         });
         if(type === 'fixed' && iTotal > 0) {
             const pct = ((fTotal / iTotal) * 100).toFixed(1);
-            ratioArea.innerHTML = `
-                <div class="ratio-label"><span>Fixed Expense / Income</span><span>${pct}%</span></div>
-                <div class="ratio-bar"><div class="ratio-fill" style="width:${pct}%; background:var(--primary)"></div></div>`;
+            ratioArea.innerHTML = `<div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:5px;"><span>Fixed / Income Ratio</span><span>${pct}%</span></div><div style="height:8px; background:var(--border); border-radius:4px; overflow:hidden;"><div style="height:100%; width:${pct}%; background:var(--primary)"></div></div>`;
         }
         document.getElementById('modalTitle').innerText = type === 'fixed' ? 'Monthly Fixed' : 'Monthly Income';
         db.entries.filter(e => e.cat === type && e.date.startsWith(prefix)).forEach(e => {
-            list.innerHTML += `<div class="list-item"><span>Day ${e.date.split('-')[2]}: ${e.desc}</span><strong class="mono">$${e.amt.toFixed(2)}</strong></div>`;
+            list.innerHTML += `<div class="list-item"><span>${e.date.split('-')[2]}: ${e.desc}</span><strong class="mono">$${e.amt.toFixed(2)}</strong></div>`;
         });
         document.getElementById('modal').style.display = 'block';
     }
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
-    function changeMonth(s) { viewDate.setMonth(viewDate.getMonth() + s); renderCalendar(); updateMonthTotals(); }
+    function changeMonth(s) { viewDate.setMonth(viewDate.getMonth() + s); renderCalendar(); }
     function updateLimit() { db.dailyLimit = parseFloat(document.getElementById('dailyLimitInput').value) || 20; calculateWeeklySurplus(); renderCalendar(); }
     
     init();
