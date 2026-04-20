@@ -2,132 +2,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Budget Pro V8.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Budget Pro V9.1</title>
     <style>
         :root { 
-            --primary: #1a73e8; --success: #28a745; --danger: #d93025; --bg: #f8f9fa; 
-            --card-bg: #ffffff; --text: #3c4043; --border: #dadce0;
+            --primary: #1a73e8; --success: #34a853; --warning: #fbbc04; --danger: #ea4335;
+            --bg: #f0f2f5; --card-bg: #ffffff; --text: #202124; --text-light: #5f6368;
+            --border: #e8eaed; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
         }
         @media (prefers-color-scheme: dark) {
-            :root { --bg: #202124; --card-bg: #2d2e30; --text: #e8eaed; --border: #3c4043; }
+            :root { --bg: #121212; --card-bg: #1e1e1e; --text: #e8eaed; --text-light: #9aa0a6; --border: #3c4043; }
         }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px; color: var(--text); transition: 0.3s; }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 12px; color: var(--text); line-height: 1.5; transition: all 0.3s ease; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); }
         
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .nav-btn { background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; cursor: pointer; color: var(--text); }
-        .action-btn { background: var(--card-bg); border: 1px solid var(--border); padding: 14px; border-radius: 8px; width: 100%; margin-bottom: 8px; font-weight: bold; cursor: pointer; font-size: 15px; display: flex; justify-content: space-between; color: var(--text); }
+        .mono { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }
+        .currency { font-size: 0.6em; margin-right: 2px; vertical-align: baseline; opacity: 0.7; }
 
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .day-header { font-size: 11px; text-align: center; opacity: 0.7; padding: 5px 0; }
-        .day { aspect-ratio: 1; border-radius: 6px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; position: relative; }
-        .day.green { background: rgba(40, 167, 69, 0.15); }
-        .day.red { background: rgba(217, 48, 37, 0.15); }
-        .day.today { border: 2px solid var(--primary) !important; font-weight: bold; }
-        .day.selected { background: var(--primary) !important; color: white !important; }
-        .day-amt { font-size: 9px; opacity: 0.9; }
-        .spread-indicator { width: 60%; height: 2px; background: var(--primary); position: absolute; bottom: 3px; border-radius: 2px; opacity: 0.5; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
+        .limit-input-wrap { display: flex; align-items: center; background: var(--card-bg); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .limit-input-wrap input { border: none; background: transparent; width: 60px; font-weight: bold; color: var(--primary); font-size: 16px; outline: none; text-align: center; }
 
-        .input-stack { display: flex; flex-direction: column; gap: 10px; }
-        label { font-size: 11px; color: var(--primary); font-weight: bold; }
-        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 16px; background: var(--card-bg); color: var(--text); }
-        .save-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 5px; }
-
-        .group-title { background: rgba(26, 115, 232, 0.1); padding: 8px 12px; font-size: 13px; font-weight: bold; margin-top: 12px; border-radius: 6px; color: var(--primary); }
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 15px; }
-        .del-btn { color: var(--danger); border: none; background: none; font-size: 18px; padding: 0 5px; cursor: pointer; margin-left: 10px; }
-
-        .footer-tools { display: flex; gap: 10px; margin-top: 20px; opacity: 0.7; }
-        .tool-btn { flex: 1; font-size: 11px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); color: var(--text); }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .day-header { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: center; color: var(--text-light); padding-bottom: 8px; }
+        .day { aspect-ratio: 1; border-radius: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 13px; cursor: pointer; position: relative; transition: 0.2s; }
+        .day.today { border: 2px solid var(--primary); animation: pulse 2s infinite ease-in-out; }
+        .day.selected { background: var(--primary) !important; color: white !important; transform: scale(1.05); z-index: 2; box-shadow: 0 4px 10px rgba(26,115,232,0.4); }
+        .day-amt { font-size: 9px; margin-top: 2px; font-weight: 500; }
+        .dot { width: 4px; height: 4px; border-radius: 50%; margin-top: 2px; }
+        .spread-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--primary); position: absolute; top: 4px; right: 4px; }
         
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; }
-        .modal-content { background: var(--card-bg); margin: 15% auto; width: 85%; padding: 20px; border-radius: 15px; max-height: 70%; overflow-y: auto; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(26,115,232,0.4); } 70% { box-shadow: 0 0 0 6px rgba(26,115,232,0); } 100% { box-shadow: 0 0 0 0 rgba(26,115,232,0); } }
+
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .sum-val { font-size: 20px; font-weight: 700; margin-top: 4px; display: block; }
+        .date-range { font-size: 10px; color: var(--text-light); display: block; margin-top: 4px; }
+        .progress-container { height: 6px; background: var(--border); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; width: 0%; transition: width 0.5s ease; }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 11px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 16px; background: var(--card-bg); color: var(--text); outline: none; }
+        
+        .quick-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .tag { padding: 6px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 16px; font-size: 12px; cursor: pointer; color: var(--text-light); transition: 0.2s; }
+        .tag:active { background: var(--primary); color: white; transform: scale(0.95); }
+
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+        .empty-state { text-align: center; padding: 30px 0; color: var(--text-light); font-style: italic; font-size: 14px; }
+        .btn-main { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .del-btn { color: var(--danger); opacity: 0.3; padding: 10px; border: none; background: none; font-size: 18px; }
+
+        .ratio-bar-wrap { margin-bottom: 20px; }
+        .ratio-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; font-weight: bold; }
+        .ratio-bar { height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; display: flex; }
+        .ratio-fill { height: 100%; }
+
+        #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-content { background: var(--card-bg); margin: 15% auto; width: 88%; padding: 24px; border-radius: 20px; max-height: 75vh; overflow-y: auto; }
     </style>
 </head>
 <body>
 
 <div class="header-row">
-    <div style="font-size: 14px; font-weight: bold;">Daily Limit: <span style="color: var(--primary);">$</span><input type="number" id="dailyLimitInput" inputmode="decimal" style="width:60px; padding:4px; margin-left:5px;" onchange="updateLimit()"></div>
-    <div id="statusInfo" style="font-size: 11px; opacity: 0.7;">V8.1 Stable</div>
+    <div class="limit-input-wrap">
+        <span style="font-size:11px; color:var(--text-light); margin-right:8px; font-weight:bold;">DAILY BUDGET</span>
+        <span style="color:var(--primary); font-weight:bold;">$</span>
+        <input type="number" id="dailyLimitInput" inputmode="decimal" onchange="updateLimit()">
+    </div>
 </div>
 
-<div class="card">
-    <div class="header-row">
-        <button class="nav-btn" onclick="changeMonth(-1)">Prev</button>
-        <h3 id="monthTitle" style="margin:0">April 2026</h3>
-        <button class="nav-btn" onclick="changeMonth(1)">Next</button>
+<div class="card" style="padding: 15px;">
+    <div class="header-row" style="margin-bottom: 15px;">
+        <button onclick="changeMonth(-1)" style="border:none; background:none; color:var(--primary); font-weight:bold;">← PREV</button>
+        <h3 id="monthTitle" style="margin:0; font-size:16px;">April 2026</h3>
+        <button onclick="changeMonth(1)" style="border:none; background:none; color:var(--primary); font-weight:bold;">NEXT →</button>
     </div>
     <div class="calendar-grid" id="calendar"></div>
 </div>
 
-<button class="action-btn" onclick="showModal('fixed')">
-    <span>Fixed Expenses</span>
-    <span class="amt" id="fixedTotalBtn">$0.00</span>
+<button class="card" style="width:100%; display:flex; border:none; margin-bottom:12px; cursor:pointer;" onclick="showModal('fixed')">
+    <div style="flex:1; text-align:left;"><small style="color:var(--text-light); font-weight:700;">FIXED EXPENSES</small></div>
+    <div class="mono" id="fixedTotalBtn" style="color:var(--primary); font-weight:bold;"><span class="currency">$</span>0.00</div>
 </button>
-<button class="action-btn" onclick="showModal('income')">
-    <span>Income</span>
-    <span class="amt" id="incomeTotalBtn" style="color:var(--success)">$0.00</span>
+<button class="card" style="width:100%; display:flex; border:none; margin-bottom:16px; cursor:pointer;" onclick="showModal('income')">
+    <div style="flex:1; text-align:left;"><small style="color:var(--text-light); font-weight:700;">TOTAL INCOME</small></div>
+    <div class="mono" id="incomeTotalBtn" style="color:var(--success); font-weight:bold;"><span class="currency">$</span>0.00</div>
 </button>
 
-<div class="summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-    <div class="summary-item card" style="margin-bottom:0;">
-        <small>Today's Total</small>
-        <span id="dayTotal" class="val" style="font-size: 1.3em; font-weight: bold; display: block; color: var(--text);">$0.00</span>
+<div class="summary-grid">
+    <div class="card" style="margin-bottom:0;">
+        <small style="color:var(--text-light); font-weight:bold;">TODAY</small>
+        <span id="dayTotal" class="sum-val mono"><span class="currency">$</span>0.00</span>
     </div>
-    <div class="summary-item card" style="margin-bottom:0; border-left: 4px solid var(--success);">
-        <small>Weekly Surplus</small>
-        <span id="weekSurplus" class="val" style="font-size: 1.3em; font-weight: bold; display: block; color: var(--success);">$0.00</span>
+    <div class="card" style="margin-bottom:0; position:relative; overflow:hidden;">
+        <small style="color:var(--text-light); font-weight:bold;">WEEK SURPLUS</small>
+        <span id="weekSurplus" class="sum-val mono" style="color:var(--success);"><span class="currency">$</span>0.00</span>
+        <span id="weekDates" class="date-range">...</span>
+        <div class="progress-container"><div id="weekProgress" class="progress-bar"></div></div>
     </div>
 </div>
 
 <div class="card" id="inputArea">
-    <h4 id="inputTitle" style="margin:0 0 15px 0;">Record: 2026-04-20</h4>
-    <div class="input-stack">
-        <div>
-            <label>Category</label>
-            <select id="cat">
-                <option value="food">Food & Dining</option>
-                <option value="transport">Transport</option>
-                <option value="grocery">Grocery (Spread 7 Days)</option>
-                <option value="fixed">Fixed Expense</option>
-                <option value="income">Income</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
-        <div>
-            <label>Amount ($)</label>
-            <input type="number" id="amt" inputmode="decimal" placeholder="0.00">
-        </div>
-        <div>
-            <label>Note</label>
-            <input type="text" id="desc" placeholder="Details...">
-        </div>
-        <button class="save-btn" onclick="addEntry()">Save Record</button>
+    <h4 id="inputTitle" style="margin:0 0 15px 0; font-size:14px; opacity:0.8;">Record: 2026-04-20</h4>
+    <div class="input-group">
+        <label>Category</label>
+        <select id="cat">
+            <option value="food">🍔 Food & Dining</option>
+            <option value="transport">🚕 Transport</option>
+            <option value="grocery">🛒 Grocery (7D Spread)</option>
+            <option value="fixed">🏠 Fixed Expense</option>
+            <option value="income">💰 Income</option>
+            <option value="other">📦 Other</option>
+        </select>
     </div>
+    <div class="input-group">
+        <label>Amount</label>
+        <input type="number" id="amt" inputmode="decimal" placeholder="0.00" style="font-size: 24px; font-weight: bold; text-align: center; color: var(--primary);">
+    </div>
+    <div class="input-group">
+        <label>Note</label>
+        <input type="text" id="desc" placeholder="Details...">
+        <div class="quick-tags">
+            <div class="tag" onclick="quickFill('Lunch')">Lunch</div>
+            <div class="tag" onclick="quickFill('Dinner')">Dinner</div>
+            <div class="tag" onclick="quickFill('7-11')">7-11</div>
+            <div class="tag" onclick="quickFill('Grab')">Grab</div>
+            <div class="tag" onclick="quickFill('Bolt')">Bolt</div>
+            <div class="tag" onclick="quickFill('Taxi')">Taxi</div>
+        </div>
+    </div>
+    <button class="btn-main" onclick="addEntry()">SAVE RECORD</button>
 </div>
 
 <div class="card">
-    <h4 style="margin:0 0 10px 0;">Daily Details</h4>
+    <h4 style="margin:0 0 15px 0; font-size:14px; color:var(--text-light);">DAILY DETAILS</h4>
     <div id="dayList"></div>
-</div>
-
-<div class="footer-tools">
-    <button class="tool-btn" onclick="exportData()">Export Backup</button>
-    <button class="tool-btn" onclick="document.getElementById('importFile').click()">Import Data</button>
-    <input type="file" id="importFile" style="display:none" onchange="importData(event)">
 </div>
 
 <div id="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h3 id="modalTitle">Details</h3>
+        <h3 id="modalTitle" style="margin-top:0;">Analysis</h3>
+        <div id="ratioArea" class="ratio-bar-wrap"></div>
         <div id="modalList"></div>
-        <button onclick="closeModal()" style="margin-top:20px; width:100%; padding:15px; border:none; border-radius:8px; font-weight:bold;">Close</button>
+        <button class="btn-main" onclick="closeModal()" style="background:var(--bg); color:var(--text); margin-top:20px;">CLOSE</button>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('budget_v8')) || { entries: [], dailyLimit: 20 };
+    let db = JSON.parse(localStorage.getItem('budget_v9')) || { entries: [], dailyLimit: 20 };
     let viewDate = new Date();
     let selectedDate = new Date().toISOString().split('T')[0];
 
@@ -144,29 +168,18 @@
         db.entries.forEach(e => {
             if (e.date === dateStr && ['food', 'transport', 'other'].includes(e.cat)) total += e.amt;
             if (e.cat === 'grocery') {
-                const purchaseDate = new Date(e.date);
-                const diffDays = Math.ceil((targetDate - purchaseDate) / (1000 * 60 * 60 * 24));
-                if (diffDays >= 0 && diffDays < 7) total += (e.amt / 7);
+                const diff = Math.ceil((targetDate - new Date(e.date)) / 86400000);
+                if (diff >= 0 && diff < 7) total += (e.amt / 7);
             }
         });
         return total;
     }
 
-    function hasSpread(dateStr) {
-        const targetDate = new Date(dateStr);
-        return db.entries.some(e => {
-            if (e.cat !== 'grocery') return false;
-            const diffDays = Math.ceil((targetDate - new Date(e.date)) / (1000 * 60 * 60 * 24));
-            return diffDays > 0 && diffDays < 7;
-        });
-    }
-
     function renderCalendar() {
         const cal = document.getElementById('calendar'); cal.innerHTML = '';
-        ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(l => cal.innerHTML += `<div class="day-header">${l}</div>`);
+        ['S','M','T','W','T','F','S'].forEach(l => cal.innerHTML += `<div class="day-header">${l}</div>`);
         const y = viewDate.getFullYear(), m = viewDate.getMonth();
         document.getElementById('monthTitle').innerText = `${new Intl.DateTimeFormat('en-US', {month:'long'}).format(viewDate)} ${y}`;
-        
         const firstDay = new Date(y, m, 1).getDay();
         const lastDate = new Date(y, m + 1, 0).getDate();
         const todayStr = new Date().toISOString().split('T')[0];
@@ -175,62 +188,52 @@
         for(let d=1; d<=lastDate; d++) {
             const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
             const spent = getDaySpent(dateStr);
-            const status = spent > db.dailyLimit ? 'red' : (spent > 0 ? 'green' : '');
-            const isSpread = hasSpread(dateStr);
+            const statusClass = spent > db.dailyLimit ? 'danger' : (spent > 0 ? 'success' : '');
+            const hasSpread = db.entries.some(e => e.cat === 'grocery' && Math.ceil((new Date(dateStr) - new Date(e.date)) / 86400000) > 0 && Math.ceil((new Date(dateStr) - new Date(e.date)) / 86400000) < 7);
+            
             cal.innerHTML += `
-                <div class="day ${status} ${dateStr===selectedDate?'selected':''} ${dateStr===todayStr?'today':''}" onclick="selectDate('${dateStr}')">
-                    ${d}<span class="day-amt">${spent>0?'$'+Math.round(spent):''}</span>
-                    ${isSpread ? '<div class="spread-indicator"></div>' : ''}
+                <div class="day ${dateStr===selectedDate?'selected':''} ${dateStr===todayStr?'today':''}" onclick="selectDate('${dateStr}')">
+                    ${d}
+                    <div class="day-amt mono" style="color:${dateStr===selectedDate?'white': (spent > db.dailyLimit ? 'var(--danger)' : 'var(--text-light)')}">${spent>0?Math.round(spent):''}</div>
+                    ${hasSpread ? '<div class="spread-dot"></div>' : ''}
+                    ${spent > 0 ? `<div class="dot" style="background:var(--${statusClass})"></div>` : ''}
                 </div>`;
         }
     }
 
-    function selectDate(d) { 
-        selectedDate = d; 
-        document.getElementById('inputTitle').innerText = `Record: ${d}`; 
-        renderCalendar(); 
-        updateDisplay(); 
-    }
+    function selectDate(d) { selectedDate = d; document.getElementById('inputTitle').innerText = `Record: ${d}`; renderCalendar(); updateDisplay(); }
+    function quickFill(text) { document.getElementById('desc').value = text; }
 
     function addEntry() {
         const amt = parseFloat(document.getElementById('amt').value);
-        if(!amt || amt <= 0) return alert("Please enter a valid amount");
-        const entry = { id: Date.now(), date: selectedDate, cat: document.getElementById('cat').value, amt, desc: document.getElementById('desc').value || document.getElementById('cat').value };
-        db.entries.push(entry);
-        saveAndRefresh();
+        if(!amt || amt <= 0) return;
+        db.entries.push({ id: Date.now(), date: selectedDate, cat: document.getElementById('cat').value, amt, desc: document.getElementById('desc').value || document.getElementById('cat').value });
+        localStorage.setItem('budget_v9', JSON.stringify(db));
         document.getElementById('amt').value = ''; document.getElementById('desc').value = '';
-        document.getElementById('dayList').scrollIntoView({ behavior: 'smooth' });
+        document.activeElement.blur();
+        renderCalendar(); updateDisplay(); updateMonthTotals();
     }
 
     function deleteEntry(id) {
         db.entries = db.entries.filter(e => e.id !== id);
-        saveAndRefresh();
-    }
-
-    function saveAndRefresh() {
-        localStorage.setItem('budget_v8', JSON.stringify(db));
+        localStorage.setItem('budget_v9', JSON.stringify(db));
         renderCalendar(); updateDisplay(); updateMonthTotals();
     }
 
     function updateDisplay() {
         const list = document.getElementById('dayList'); list.innerHTML = '';
-        const groups = { food: [], transport: [], grocery: [], other: [], fixed: [], income: [] };
-        const cats = { food: 'Food', transport: 'Transport', grocery: 'Grocery', other: 'Other', fixed: 'Fixed', income: 'Income' };
-        
-        db.entries.filter(e => e.date === selectedDate).forEach(e => groups[e.cat].push(e));
-
-        for (let key in cats) {
-            if (groups[key].length > 0) {
-                list.innerHTML += `<div class="group-title">${cats[key]}</div>`;
-                groups[key].forEach(e => {
-                    list.innerHTML += `<div class="list-item">
-                        <span>${e.desc}</span>
-                        <div><strong>$${e.amt.toFixed(2)}</strong><button class="del-btn" onclick="deleteEntry(${e.id})">×</button></div>
-                    </div>`;
-                });
-            }
+        const dayEntries = db.entries.filter(e => e.date === selectedDate);
+        if(dayEntries.length === 0) {
+            list.innerHTML = `<div class="empty-state">No expenses today. You're doing great! ☕</div>`;
+        } else {
+            dayEntries.forEach(e => {
+                list.innerHTML += `<div class="list-item">
+                    <div><div style="font-weight:bold; font-size:15px;">${e.desc}</div><small style="color:var(--text-light); text-transform:uppercase; font-size:10px;">${e.cat}</small></div>
+                    <div style="display:flex; align-items:center;"><span class="mono" style="font-weight:bold;">$${e.amt.toFixed(2)}</span><button class="del-btn" onclick="deleteEntry(${e.id})">×</button></div>
+                </div>`;
+            });
         }
-        document.getElementById('dayTotal').innerText = `$${getDaySpent(selectedDate).toFixed(2)}`;
+        document.getElementById('dayTotal').innerHTML = `<span class="currency">$</span>${getDaySpent(selectedDate).toFixed(2)}`;
         calculateWeeklySurplus();
     }
 
@@ -238,15 +241,23 @@
         const curr = new Date(selectedDate);
         const day = curr.getDay() || 7;
         const mon = new Date(curr.setDate(curr.getDate() - day + 1));
+        const sun = new Date(new Date(mon).setDate(mon.getDate() + 6));
+        document.getElementById('weekDates').innerText = `${mon.toLocaleDateString('en-US', {month:'short', day:'numeric'})} - ${sun.toLocaleDateString('en-US', {month:'short', day:'numeric'})}`;
         let weekSpent = 0;
+        let tempDate = new Date(mon);
         for(let i=0; i<7; i++) {
-            weekSpent += getDaySpent(mon.toISOString().split('T')[0]);
-            mon.setDate(mon.getDate() + 1);
+            weekSpent += getDaySpent(tempDate.toISOString().split('T')[0]);
+            tempDate.setDate(tempDate.getDate() + 1);
         }
-        const surplus = (db.dailyLimit * 7) - weekSpent;
+        const limit = db.dailyLimit * 7;
+        const surplus = limit - weekSpent;
+        const pct = Math.min((weekSpent / limit) * 100, 100);
         const el = document.getElementById('weekSurplus');
-        el.innerText = `$${surplus.toFixed(2)}`;
+        el.innerHTML = `<span class="currency">$</span>${surplus.toFixed(2)}`;
         el.style.color = surplus < 0 ? 'var(--danger)' : 'var(--success)';
+        const bar = document.getElementById('weekProgress');
+        bar.style.width = pct + '%';
+        bar.style.background = pct > 90 ? 'var(--danger)' : (pct > 70 ? 'var(--warning)' : 'var(--success)');
     }
 
     function updateMonthTotals() {
@@ -258,43 +269,37 @@
                 if(e.cat === 'income') iTotal += e.amt;
             }
         });
-        document.getElementById('fixedTotalBtn').innerText = `$${fTotal.toFixed(2)}`;
-        document.getElementById('incomeTotalBtn').innerText = `$${iTotal.toFixed(2)}`;
-    }
-
-    function exportData() {
-        const blob = new Blob([JSON.stringify(db)], {type: 'application/json'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `budget_backup_${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-    }
-
-    function importData(event) {
-        const reader = new FileReader();
-        reader.onload = e => {
-            try {
-                db = JSON.parse(e.target.result);
-                saveAndRefresh();
-                alert("Import Successful!");
-            } catch { alert("Invalid File"); }
-        };
-        reader.readAsText(event.target.files[0]);
+        document.getElementById('fixedTotalBtn').innerHTML = `<span class="currency">$</span>${fTotal.toFixed(2)}`;
+        document.getElementById('incomeTotalBtn').innerHTML = `<span class="currency">$</span>${iTotal.toFixed(2)}`;
     }
 
     function showModal(type) {
         const list = document.getElementById('modalList'); list.innerHTML = '';
+        const ratioArea = document.getElementById('ratioArea'); ratioArea.innerHTML = '';
         const prefix = `${viewDate.getFullYear()}-${String(viewDate.getMonth()+1).padStart(2,'0')}`;
-        document.getElementById('modalTitle').innerText = type === 'fixed' ? 'Fixed Expenses' : 'Income Details';
+        let iTotal = 0, fTotal = 0;
+        db.entries.forEach(e => {
+            if(e.date.startsWith(prefix)) {
+                if(e.cat === 'income') iTotal += e.amt;
+                if(e.cat === 'fixed') fTotal += e.amt;
+            }
+        });
+        if(type === 'fixed' && iTotal > 0) {
+            const pct = ((fTotal / iTotal) * 100).toFixed(1);
+            ratioArea.innerHTML = `
+                <div class="ratio-label"><span>Fixed Expense / Income</span><span>${pct}%</span></div>
+                <div class="ratio-bar"><div class="ratio-fill" style="width:${pct}%; background:var(--primary)"></div></div>`;
+        }
+        document.getElementById('modalTitle').innerText = type === 'fixed' ? 'Monthly Fixed' : 'Monthly Income';
         db.entries.filter(e => e.cat === type && e.date.startsWith(prefix)).forEach(e => {
-            list.innerHTML += `<div class="list-item"><span>${e.date.split('-')[2]}: ${e.desc}</span><strong>$${e.amt.toFixed(2)}</strong></div>`;
+            list.innerHTML += `<div class="list-item"><span>Day ${e.date.split('-')[2]}: ${e.desc}</span><strong class="mono">$${e.amt.toFixed(2)}</strong></div>`;
         });
         document.getElementById('modal').style.display = 'block';
     }
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     function changeMonth(s) { viewDate.setMonth(viewDate.getMonth() + s); renderCalendar(); updateMonthTotals(); }
-    function updateLimit() { db.dailyLimit = parseFloat(document.getElementById('dailyLimitInput').value) || 20; saveAndRefresh(); }
+    function updateLimit() { db.dailyLimit = parseFloat(document.getElementById('dailyLimitInput').value) || 20; calculateWeeklySurplus(); renderCalendar(); }
     
     init();
 </script>
