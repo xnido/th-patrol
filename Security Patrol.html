@@ -90,7 +90,7 @@
 
             background: var(--bg-body); margin: 0; padding: 10px; color: var(--text-main);
 
-            transition: 0.3s; line-height: 1.5; font-size: 16px; /* 增大手机字号 */
+            transition: 0.3s; line-height: 1.65; font-size: 18px; /* 手机阅读优化 */
 
         }
 
@@ -112,17 +112,17 @@
 
 
 
-        .theme-switch-wrapper { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+        .settings-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 12px; }
 
-        .theme-btn { 
+        .setting-select {
 
-            padding: 6px 12px; border: 1px solid rgba(255,255,255,0.6); background: transparent; 
+            flex: 1; min-width: 0; max-width: 220px; padding: 10px 12px;
 
-            color: #fff; border-radius: 4px; font-size: 12px; cursor: pointer; 
+            border: 1px solid rgba(255,255,255,0.6); border-radius: 6px;
+
+            background: var(--bg-card); color: var(--text-main); font-size: 16px; cursor: pointer;
 
         }
-
-        .theme-btn.active { background: #fff; color: var(--jw-blue); font-weight: bold; }
 
 
 
@@ -152,7 +152,7 @@
 
 
 
-        .section-tag { background: var(--jw-blue); color: #fff; padding: 6px 14px; border-radius: 4px; font-size: 14px; margin: 15px 0 8px; display: inline-block; font-weight: bold; }
+        .section-tag { background: var(--jw-blue); color: #fff; padding: 8px 14px; border-radius: 4px; font-size: 17px; margin: 15px 0 8px; display: inline-block; font-weight: bold; }
 
         
 
@@ -162,15 +162,15 @@
 
         .num { font-weight: bold; color: var(--jw-blue); margin-right: 8px; min-width: 25px; font-size: 16px; }
 
-        .desc-en { font-weight: bold; font-size: 16px; }
+        .desc-en { font-weight: bold; font-size: 18px; line-height: 1.5; }
 
         
 
         /* 取消缩进 */
 
-        .detail-line { display: block; font-size: 14px; color: var(--text-sub); margin-left: 0; margin-bottom: 12px; }
+        .detail-line { display: block; font-size: 18px; line-height: 1.65; color: var(--text-sub); margin-left: 0; margin-bottom: 14px; }
 
-        .sub-points-text { margin-left: 0; margin-bottom: 12px; font-size: 14px; color: var(--text-sub); }
+        .sub-points-text { margin-left: 0; margin-bottom: 14px; font-size: 18px; line-height: 1.65; color: var(--text-sub); }
 
         .sub-points-text div { margin-bottom: 6px; }
 
@@ -178,7 +178,7 @@
 
 
 
-        .btn { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: var(--bg-card); font-size: 14px; font-weight: bold; color: var(--text-main); text-align: center; text-decoration: none; }
+        .btn { flex: 1; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: var(--bg-card); font-size: 17px; font-weight: bold; color: var(--text-main); text-align: center; text-decoration: none; }
 
         .btn-qr { background: var(--jw-blue); color: white !important; }
 
@@ -234,13 +234,27 @@
 
     <div class="control-panel">
 
-        <div class="theme-switch-wrapper">
+        <div class="settings-row">
 
-            <button class="theme-btn" onclick="setTheme('light')">浅色</button>
+            <select id="themeSelect" class="setting-select" onchange="setTheme(this.value)">
 
-            <button class="theme-btn" onclick="setTheme('dark')">深色</button>
+                <option value="auto">主题：系统默认</option>
 
-            <button class="theme-btn" onclick="setTheme('auto')">系统默认</button>
+                <option value="light">主题：浅色</option>
+
+                <option value="dark">主题：深色</option>
+
+            </select>
+
+            <select id="languageSelect" class="setting-select" onchange="setLanguage(this.value)">
+
+                <option value="zh">语言：中文</option>
+
+                <option value="ko">언어: 한국어</option>
+
+                <option value="en">Language: English</option>
+
+            </select>
 
         </div>
 
@@ -392,97 +406,121 @@
 
         { section: "Exterior (室外巡逻)", list: [
 
-            { id: 1, en: "Back door / gate behind Maintenance Building", zh: "<b>维修楼后门 / 后门闸门</b>：检查门是否已上锁" },
+            { id: 1, en: "Back door / gate behind Maintenance Building", desc: { zh: "<b>维修楼后门 / 后门闸门</b>：检查门是否已上锁", ko: "<b>정비동 뒤쪽 문 / 뒤쪽 게이트</b>: 문이 잠겨 있는지 확인", en: "<b>Back door / gate behind Maintenance Building</b>: Check that the door is locked" } },
 
-            { id: 2, en: "Doors at Maintenance Building", zh: "<b>维修楼的门</b>：检查维修区 and 主储藏室的两扇门是否都已上锁" },
+            { id: 2, en: "Doors at Maintenance Building", desc: { zh: "<b>维修楼的门</b>：检查维修区 and 主储藏室的两扇门是否都已上锁", ko: "<b>정비동 출입문</b>: 정비 구역과 주 보관실의 두 문이 모두 잠겨 있는지 확인", en: "<b>Doors at Maintenance Building</b>: Check that both the Maintenance Area and Main Storage Room doors are locked" } },
 
-            { id: 3, en: "Back doors of Building 3, level 1 and 2", zh: "<b>3号楼一层和二层的后门</b>：检查两扇门是否都已上锁（从外侧检查门把手）" },
+            { id: 3, en: "Back doors of Building 3, level 1 and 2", desc: { zh: "<b>3号楼一层和二层的后门</b>：检查两扇门是否都已上锁（从外侧检查门把手）", ko: "<b>3동 1층과 2층 뒤쪽 문</b>: 두 문이 모두 잠겨 있는지 확인(바깥쪽에서 문손잡이 확인)", en: "<b>Back doors of Building 3, levels 1 and 2</b>: Check that both doors are locked (test the handles from outside)" } },
 
-            { id: 4, en: "All windows on lower level Building 3, 2, 1", zh: "<b>3号、2号、1号楼底层所有窗户</b>：检查中央锁是否正确锁好（此项检查在之后的巡逻过程中持续进行）" },
+            { id: 4, en: "All windows on lower level Building 3, 2, 1", desc: { zh: "<b>3号、2号、1号楼底层所有窗户</b>：检查中央锁是否正确锁好（此项检查在之后的巡逻过程中持续进行）", ko: "<b>3동, 2동, 1동 저층의 모든 창문</b>: 중앙 잠금장치가 제대로 잠겨 있는지 확인(이후 순찰 중에도 계속 확인)", en: "<b>All lower-level windows of Buildings 3, 2 and 1</b>: Check that the center locks are secured properly (continue checking during the rest of the patrol)" } },
 
-            { id: 5, en: "Link way between Building 2 and 3", zh: "<b>2号楼与3号楼之间的连廊</b>：检查门是否已上锁（从外侧检查门把手）" },
+            { id: 5, en: "Link way between Building 2 and 3", desc: { zh: "<b>2号楼与3号楼之间的连廊</b>：检查门是否已上锁（从外侧检查门把手）", ko: "<b>2동과 3동 사이 연결 통로</b>: 문이 잠겨 있는지 확인(바깥쪽에서 문손잡이 확인)", en: "<b>Linkway between Buildings 2 and 3</b>: Check that the door is locked (test the handle from outside)" } },
 
-            { id: 6, en: "Hoses", zh: "<b>水管</b>：检查所有水管是否已关闭" },
+            { id: 6, en: "Hoses", desc: { zh: "<b>水管</b>：检查所有水管是否已关闭", ko: "<b>호스</b>: 모든 호스의 물이 잠겨 있는지 확인", en: "<b>Hoses</b>: Check that all hoses are turned off" } },
 
-            { id: 7, en: "Cars in Parking area behind Bethel", zh: "<b>车辆</b>：检查是否有车辆未关闭车灯（车内或车外灯）" },
+            { id: 7, en: "Cars in Parking area behind Bethel", desc: { zh: "<b>车辆</b>：检查是否有车辆未关闭车灯（车内或车外灯）", ko: "<b>베델 뒤 주차 구역의 차량</b>: 실내등이나 외부등이 켜진 차량이 있는지 확인", en: "<b>Cars in the parking area behind Bethel</b>: Check whether any interior or exterior vehicle lights were left on" } },
 
-            { id: 8, en: "Bethel Laundry & Garden Storage", zh: "洗衣房 & 园艺储存区", isMulti: true, 
+            { id: 8, en: "Bethel Laundry & Garden Storage", desc: { zh: "洗衣房 & 园艺储存区", ko: "세탁실 및 원예 보관 구역", en: "Laundry and garden storage area" }, isMulti: true, 
 
-              points: [
+              points: {
 
-                "<b>8.1 伯特利1号楼洗衣房附近的门</b>：检查门是否已上锁（从外侧检查门把手）",
+                zh: [
 
-                "<b>8.2 园艺工具户外储藏室</b>：检查门是否已上锁",
+                    "<b>8.1 伯特利1号楼洗衣房附近的门</b>：检查门是否已上锁（从外侧检查门把手）",
 
-                "<b>8.3 煤气罐</b>：检查是否有煤气泄漏（是否有强烈煤气味）"
+                    "<b>8.2 园艺工具户外储藏室</b>：检查门是否已上锁",
 
-              ] 
+                    "<b>8.3 煤气罐</b>：检查是否有煤气泄漏（是否有强烈煤气味）"
+
+                ],
+
+                ko: [
+
+                    "<b>8.1 베델 1동 세탁실 근처 문</b>: 문이 잠겨 있는지 확인(바깥쪽에서 문손잡이 확인)",
+
+                    "<b>8.2 야외 원예 도구 보관실</b>: 문이 잠겨 있는지 확인",
+
+                    "<b>8.3 가스통</b>: 가스 누출 여부 확인(강한 가스 냄새가 나는지 확인)"
+
+                ],
+
+                en: [
+
+                    "<b>8.1 Door near the Building 1 Laundry</b>: Check that the door is locked (test the handle from outside)",
+
+                    "<b>8.2 Outdoor garden-tool storage room</b>: Check that the door is locked",
+
+                    "<b>8.3 Gas cylinders</b>: Check for a gas leak (notice any strong gas smell)"
+
+                ]
+
+              } 
 
             },
 
-            { id: 9, en: "Garden tool shed", zh: "<b>园艺工具棚</b>：检查门是否已上锁，并检查空气泵阀门是否正确关闭" },
+            { id: 9, en: "Garden tool shed", desc: { zh: "<b>园艺工具棚</b>：检查门是否已上锁，并检查空气泵阀门是否正确关闭", ko: "<b>원예 도구 창고</b>: 문이 잠겨 있는지 확인하고 공기 펌프 밸브가 제대로 닫혀 있는지 확인", en: "<b>Garden tool shed</b>: Check that the door is locked and the air-pump valve is closed properly" } },
 
-            { id: 10, en: "Shipping entry door from outside", zh: "<b>收发货区外侧入口门</b>：检查门是否正确上锁（从外侧检查门把手）" },
+            { id: 10, en: "Shipping entry door from outside", desc: { zh: "<b>收发货区外侧入口门</b>：检查门是否正确上锁（从外侧检查门把手）", ko: "<b>발송 구역 외부 출입문</b>: 문이 제대로 잠겨 있는지 확인(바깥쪽에서 문손잡이 확인)", en: "<b>Shipping entry door from outside</b>: Check that the door is locked properly (test the handle from outside)" } },
 
-            { id: 11, en: "Main Bethel Lobby door", zh: "<b>伯特利大厅主门</b>：检查门两侧是否都正确上锁（从外侧检查门把手）" },
+            { id: 11, en: "Main Bethel Lobby door", desc: { zh: "<b>伯特利大厅主门</b>：检查门两侧是否都正确上锁（从外侧检查门把手）", ko: "<b>베델 정문</b>: 양쪽 문이 모두 제대로 잠겨 있는지 확인(바깥쪽에서 문손잡이 확인)", en: "<b>Main Bethel lobby door</b>: Check that both sides are locked properly (test the handles from outside)" } },
 
-            { id: 12, en: "Chiller & Water Pump House", zh: "<b>冷水机</b>：检查是否有严重漏水（因冷凝产生少量积水属正常），并检查水泵房门是否已上锁" },
+            { id: 12, en: "Chiller & Water Pump House", desc: { zh: "<b>冷水机</b>：检查是否有严重漏水（因冷凝产生少量积水属正常），并检查水泵房门是否已上锁", ko: "<b>냉각기</b>: 심한 누수가 있는지 확인(응결로 인한 소량의 물은 정상)하고 펌프실 문이 잠겨 있는지 확인", en: "<b>Chiller</b>: Check for serious water leaks (a small amount of condensation is normal) and check that the water-pump-house door is locked" } },
 
-            { id: 13, en: "Main Bethel Gate and small side door", zh: "<b>伯特利主大门和侧小门</b>：检查大门和小门是否正确上锁" },
+            { id: 13, en: "Main Bethel Gate and small side door", desc: { zh: "<b>伯特利主大门和侧小门</b>：检查大门和小门是否正确上锁", ko: "<b>베델 정문 게이트와 작은 옆문</b>: 게이트와 작은 문이 제대로 잠겨 있는지 확인", en: "<b>Main Bethel gate and small side door</b>: Check that both are locked properly" } },
 
-            { id: 14, en: "Cars at parking area", zh: "<b>伯特利前方停车区的车辆</b>：检查是否有车辆未关闭车灯或车内灯" },
+            { id: 14, en: "Cars at parking area", desc: { zh: "<b>伯特利前方停车区的车辆</b>：检查是否有车辆未关闭车灯或车内灯", ko: "<b>베델 앞 주차 구역의 차량</b>: 차량의 외부등이나 실내등이 켜져 있는지 확인", en: "<b>Cars in the parking area in front of Bethel</b>: Check whether any exterior or interior vehicle lights were left on" } },
 
-            { id: 15, en: "House 9 (Gate & Doors)", zh: "<b>9号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁" },
+            { id: 15, en: "House 9 (Gate & Doors)", desc: { zh: "<b>9号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁", ko: "<b>9번 주택</b>: 주택 문, 게이트 및 Moo Ban Soi 29로 이어지는 작은 옆문이 제대로 잠겨 있는지 확인", en: "<b>House 9</b>: Check that the house doors, gate and small side door leading to Moo Ban Soi 29 are locked properly" } },
 
-            { id: 16, en: "Emergency exit door", zh: "<b>开放式办公室紧急出口门</b>：检查门是否正确上锁" },
+            { id: 16, en: "Emergency exit door", desc: { zh: "<b>开放式办公室紧急出口门</b>：检查门是否正确上锁", ko: "<b>오픈 오피스 비상구</b>: 문이 제대로 잠겨 있는지 확인", en: "<b>Open Office emergency exit door</b>: Check that the door is locked properly" } },
 
-            { id: 17, en: "House 5 (Gate & Doors)", zh: "<b>5号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁" },
+            { id: 17, en: "House 5 (Gate & Doors)", desc: { zh: "<b>5号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁", ko: "<b>5번 주택</b>: 주택 문, 게이트 및 Moo Ban Soi 29로 이어지는 작은 옆문이 제대로 잠겨 있는지 확인", en: "<b>House 5</b>: Check that the house doors, gate and small side door leading to Moo Ban Soi 29 are locked properly" } },
 
-            { id: 18, en: "House 6 (Gate & Doors)", zh: "<b>6号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁" },
+            { id: 18, en: "House 6 (Gate & Doors)", desc: { zh: "<b>6号住宅</b>：住宅门、大门及通往Moo Ban Soi 29的小侧门，检查大门和各门是否正确上锁", ko: "<b>6번 주택</b>: 주택 문, 게이트 및 Moo Ban Soi 29로 이어지는 작은 옆문이 제대로 잠겨 있는지 확인", en: "<b>House 6</b>: Check that the house doors, gate and small side door leading to Moo Ban Soi 29 are locked properly" } },
 
-            { id: 19, en: "Garden / Patio area", zh: "<b>花园 / 露台区域</b>：检查三扇门是否都已正确上锁（从外侧逐一检查门把手）" },
+            { id: 19, en: "Garden / Patio area", desc: { zh: "<b>花园 / 露台区域</b>：检查三扇门是否都已正确上锁（从外侧逐一检查门把手）", ko: "<b>정원 / 파티오 구역</b>: 세 문이 모두 제대로 잠겨 있는지 확인(바깥쪽에서 각 문손잡이 확인)", en: "<b>Garden / patio area</b>: Check that all three doors are locked properly (test each handle from outside)" } },
 
-            { id: 36, en: "Green Space", zh: "绕场巡逻一圈。" }
+            { id: 36, en: "Green Space", desc: { zh: "绕场巡逻一圈", ko: "건물 주변을 한 바퀴 순찰", en: "Patrol one full round around the grounds" } }
 
         ]},
 
         { section: "Interior L1 (室内 L1)", list: [
 
-            { id: 20, en: "Open Office Area", zh: "<b>开放式办公室区域</b>：检查所有灯是否已关闭（包括会议室），并检查后门是否正确上锁" },
+            { id: 20, en: "Open Office Area", desc: { zh: "<b>开放式办公室区域</b>：检查所有灯是否已关闭（包括会议室），并检查后门是否正确上锁", ko: "<b>오픈 오피스 구역</b>: 회의실을 포함한 모든 조명이 꺼져 있는지 확인하고 뒤쪽 문이 제대로 잠겨 있는지 확인", en: "<b>Open Office area</b>: Check that all lights, including meeting-room lights, are off and that the back door is locked properly" } },
 
-            { id: 21, en: "Exercise Rooms", zh: "<b>健身房</b>：检查两间健身房的空调和灯是否已关闭（每晚约22:00倒空除湿机）" },
+            { id: 21, en: "Exercise Rooms", desc: { zh: "<b>健身房</b>：检查两间健身房的空调和灯是否已关闭（每晚约22:00倒空除湿机）", ko: "<b>운동실</b>: 두 운동실의 에어컨과 조명이 꺼져 있는지 확인(매일 밤 약 22:00에 제습기 물통 비우기)", en: "<b>Exercise rooms</b>: Check that the air conditioners and lights in both rooms are off (empty the dehumidifiers at about 22:00 each night)" } },
 
-            { id: 22, en: "Locker Room", zh: "<b>健身房附近更衣室</b>：检查男女淋浴间的灯是否已关闭" },
+            { id: 22, en: "Locker Room", desc: { zh: "<b>健身房附近更衣室</b>：检查男女淋浴间的灯是否已关闭", ko: "<b>운동실 근처 탈의실</b>: 남녀 샤워실의 조명이 꺼져 있는지 확인", en: "<b>Locker room near the exercise rooms</b>: Check that the lights in the men's and women's shower rooms are off" } },
 
-            { id: 23, en: "Family Lounge", zh: "<b>家庭休息室</b>：检查家庭休息室及相连厨房的灯是否已关闭" },
+            { id: 23, en: "Family Lounge", desc: { zh: "<b>家庭休息室</b>：检查家庭休息室及相连厨房的灯是否已关闭", ko: "<b>패밀리 라운지</b>: 라운지와 연결된 주방의 조명이 꺼져 있는지 확인", en: "<b>Family Lounge</b>: Check that the lights in the lounge and adjoining kitchen are off" } },
 
-            { id: 24, en: "Shipping Room", zh: "<b>收发货室</b>：检查灯是否已关闭，卷闸门是否完全关闭" },
+            { id: 24, en: "Shipping Room", desc: { zh: "<b>收发货室</b>：检查灯是否已关闭，卷闸门是否完全关闭", ko: "<b>발송실</b>: 조명이 꺼져 있고 롤러 셔터가 완전히 닫혀 있는지 확인", en: "<b>Shipping Room</b>: Check that the lights are off and the roller shutter is fully closed" } },
 
-            { id: 25, en: "Office 1111, 1112, 1114", zh: "<b>1111（办公室）、1112（录音室）、1114（理发室）</b>：检查各办公室的空调和灯是否已关闭" },
+            { id: 25, en: "Office 1111, 1112, 1114", desc: { zh: "<b>1111（办公室）、1112（录音室）、1114（理发室）</b>：检查各办公室的空调和灯是否已关闭", ko: "<b>1111(사무실), 1112(녹음실), 1114(미용실)</b>: 각 방의 에어컨과 조명이 꺼져 있는지 확인", en: "<b>1111 (office), 1112 (recording room), 1114 (barber shop)</b>: Check that the air conditioners and lights in each room are off" } },
 
-            { id: 26, en: "Storge Room", zh: "<b>储藏室冷冻柜</b>：检查温度是否在-17至-20度之间", type: "storage_temp" },
+            { id: 26, en: "Storge Room", desc: { zh: "<b>储藏室冷冻柜</b>：检查温度是否在-17至-20度之间", ko: "<b>보관실 냉동고</b>: 온도가 -17°C에서 -20°C 사이인지 확인", en: "<b>Storage Room freezers</b>: Check that the temperature is between -17°C and -20°C" }, type: "storage_temp" },
 
-            { id: 27, en: "Boiler Room", zh: "<b>锅炉房</b>：检查设备是否按要求摆放整齐，并检查是否有煤气或漏水情况（是否有煤气或烧焦气味）" },
+            { id: 27, en: "Boiler Room", desc: { zh: "<b>锅炉房</b>：检查设备是否按要求摆放整齐，并检查是否有煤气或漏水情况（是否有煤气或烧焦气味）", ko: "<b>보일러실</b>: 장비가 지정된 대로 정돈되어 있는지 확인하고 가스나 누수가 있는지 확인(가스 냄새나 타는 냄새 확인)", en: "<b>Boiler Room</b>: Check that equipment is stored as required and check for gas or water leaks (notice any gas or burning smell)" } },
 
-            { id: 28, en: "Kitchen", zh: "<b>厨房</b>：检查冷藏室温度是否在2至4度之间，燃气灶引火火焰是否关闭，吊扇是否关闭，空调是否关闭，所有电器是否关闭，灯是否关闭，并检查是否有漏水", type: "kitchen_temp" },
+            { id: 28, en: "Kitchen", desc: { zh: "<b>厨房</b>：检查冷藏室温度是否在2至4度之间，燃气灶引火火焰是否关闭，吊扇是否关闭，空调是否关闭，所有电器是否关闭，灯是否关闭，并检查是否有漏水", ko: "<b>주방</b>: 냉장실 온도가 2°C에서 4°C 사이인지, 가스레인지 점화 불꽃·천장 팬·에어컨·모든 전기기기·조명이 꺼져 있는지 확인하고 누수가 있는지 확인", en: "<b>Kitchen</b>: Check that the cold-room temperature is 2–4°C; the gas-stove pilot flame, ceiling fans, air conditioner, appliances and lights are off; and there are no water leaks" }, type: "kitchen_temp" },
 
-            { id: 29, en: "Dining Room", zh: "<b>餐厅</b>：检查空调和灯是否已关闭" },
+            { id: 29, en: "Dining Room", desc: { zh: "<b>餐厅</b>：检查空调和灯是否已关闭", ko: "<b>식당</b>: 에어컨과 조명이 꺼져 있는지 확인", en: "<b>Dining Room</b>: Check that the air conditioner and lights are off" } },
 
-            { id: 30, en: "Laundry", zh: "<b>洗衣房</b>：检查空调和灯是否已关闭，检查大型烘干机后方的煤气阀是否关闭，并检查是否有漏水" },
+            { id: 30, en: "Laundry", desc: { zh: "<b>洗衣房</b>：检查空调和灯是否已关闭，检查大型烘干机后方的煤气阀是否关闭，并检查是否有漏水", ko: "<b>세탁실</b>: 에어컨과 조명이 꺼져 있는지, 대형 건조기 뒤의 가스 밸브가 닫혀 있는지 확인하고 누수가 있는지 확인", en: "<b>Laundry</b>: Check that the air conditioner and lights are off, the gas valve behind the large dryer is closed, and there are no water leaks" } },
 
-            { id: 31, en: "Toilets", zh: "<b>餐厅附近洗手间</b>：检查男女洗手间是否有漏水，灯是否已关闭" },
+            { id: 31, en: "Toilets", desc: { zh: "<b>餐厅附近洗手间</b>：检查男女洗手间是否有漏水，灯是否已关闭", ko: "<b>식당 근처 화장실</b>: 남녀 화장실에 누수가 없는지와 조명이 꺼져 있는지 확인", en: "<b>Toilets near the Dining Room</b>: Check the men's and women's toilets for water leaks and make sure the lights are off" } },
 
-            { id: 32, en: "Pantry", zh: "<b>茶水间</b>：检查冰箱温度是否在2至5度之间，冷冻柜温度是否在-17至-22度之间", type: "pantry_temp" }
+            { id: 32, en: "Pantry", desc: { zh: "<b>茶水间</b>：检查冰箱温度是否在2至5度之间，冷冻柜温度是否在-17至-22度之间", ko: "<b>팬트리</b>: 냉장고 온도가 2°C에서 5°C 사이이고 냉동고 온도가 -17°C에서 -22°C 사이인지 확인", en: "<b>Pantry</b>: Check that refrigerator temperatures are 2–5°C and freezer temperatures are -17°C to -22°C" }, type: "pantry_temp" }
 
         ]},
 
         { section: "Interior L2 (室内 L2)", list: [
 
-            { id: 33, en: "Office Section Building 1, Level 2", zh: "<b>1号楼二层办公室区域</b>：检查各办公室的空调和灯是否已关闭，并检查所有办公室门是否已上锁" },
+            { id: 33, en: "Office Section Building 1, Level 2", desc: { zh: "<b>1号楼二层办公室区域</b>：检查各办公室的空调和灯是否已关闭，并检查所有办公室门是否已上锁", ko: "<b>1동 2층 사무실 구역</b>: 각 사무실의 에어컨과 조명이 꺼져 있는지 확인하고 모든 사무실 문이 잠겨 있는지 확인", en: "<b>Building 1, Level 2 office area</b>: Check that the air conditioners and lights are off and that all office doors are locked" } },
 
-            { id: 34, en: "Fire doors and storage rooms", zh: "<b>防火门/储藏室</b>：检查所有防火门是否关闭，所有储藏室是否已上锁（位置参见地图）" },
+            { id: 34, en: "Fire doors and storage rooms", desc: { zh: "<b>防火门/储藏室</b>：检查所有防火门是否关闭，所有储藏室是否已上锁（位置参见地图）", ko: "<b>방화문 / 보관실</b>: 모든 방화문이 닫혀 있고 모든 보관실이 잠겨 있는지 확인(위치는 지도 참조)", en: "<b>Fire doors / storage rooms</b>: Check that all fire doors are closed and all storage rooms are locked (see the map for locations)" } },
 
-            { id: 35, en: "AHU (Air Handling Unit)", zh: "<b>空气处理机组（AHU）</b>：检查是否有严重漏水（因冷凝产生少量积水属正常）" }
+            { id: 35, en: "AHU (Air Handling Unit)", desc: { zh: "<b>空气处理机组（AHU）</b>：检查是否有严重漏水（因冷凝产生少量积水属正常）", ko: "<b>공기조화기(AHU)</b>: 심한 누수가 있는지 확인(응결로 인한 소량의 물은 정상)", en: "<b>Air Handling Unit (AHU)</b>: Check for serious water leaks (a small amount of condensation is normal)" } }
 
         ]}
 
@@ -491,6 +529,8 @@
 
 
     let currentSlot = slots[0];
+
+    let currentLanguage = localStorage.getItem('patrol-language') || 'zh';
 
     const DB_KEY = "Patrol_Final_V17";
 
@@ -512,19 +552,25 @@
 
         localStorage.setItem('user-theme', theme);
 
-        updateThemeButtons(theme);
+        const themeSelect = document.getElementById('themeSelect');
+
+        if (themeSelect) themeSelect.value = theme;
 
     }
 
 
 
-    function updateThemeButtons(theme) {
+    function setLanguage(language) {
 
-        document.querySelectorAll('.theme-btn').forEach(btn => {
+        currentLanguage = ['zh', 'ko', 'en'].includes(language) ? language : 'zh';
 
-            btn.classList.toggle('active', btn.innerText.includes(theme === 'auto' ? '系统' : theme === 'dark' ? '黑暗' : '明亮'));
+        localStorage.setItem('patrol-language', currentLanguage);
 
-        });
+        const languageSelect = document.getElementById('languageSelect');
+
+        if (languageSelect) languageSelect.value = currentLanguage;
+
+        render();
 
     }
 
@@ -533,6 +579,8 @@
     function init() {
 
         setTheme(localStorage.getItem('user-theme') || 'auto');
+
+        document.getElementById('languageSelect').value = currentLanguage;
 
         const slotEl = document.getElementById('timeSlots');
 
@@ -650,7 +698,11 @@
 
 
 
-                let descHtml = item.isMulti ? `<div class="sub-points-text">${item.points.map(p => `<div>${p}</div>`).join('')}</div>` : `<span class="detail-line">${item.zh}</span>`;
+                const description = item.desc[currentLanguage] || item.desc.zh;
+
+                const points = item.isMulti ? (item.points[currentLanguage] || item.points.zh) : [];
+
+                let descHtml = item.isMulti ? `<div class="detail-line">${description}</div><div class="sub-points-text">${points.map(p => `<div>${p}</div>`).join('')}</div>` : `<span class="detail-line">${description}</span>`;
 
 
 
