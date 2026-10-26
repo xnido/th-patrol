@@ -202,7 +202,7 @@
 
         .alert-temp { background: #e74c3c !important; color: white !important; }
 
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a1a1a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
 
     </style>
 
@@ -212,19 +212,9 @@
 
 
 
-<div id="lock-screen" style="display: none;">
-
-    <h2 style="color: white; font-size: 20px; margin-bottom: 20px;">Thailand Branch Patrol</h2>
-
-    <button class="btn btn-qr" style="width: 220px;" onclick="verifyAccess()">点击输入访问口令</button>
-
-</div>
-
-
-
 <div id="main-content">
 
-    <div class="header">
+    <div style="max-width:720px;margin:0 auto 12px"><a href="index.html" style="display:inline-block;color:#fff;text-decoration:none;font-size:15px;padding:9px 12px;border:1px solid #77869b;border-radius:9px">← 主页 / Home</a></div><div class="header">
 
         <h1>Thailand Branch Security Patrol</h1>
 
@@ -268,8 +258,6 @@
 
             <button class="btn-clear" onclick="clearRecords()">重置所有记录</button>
 
-            <button class="btn-clear" onclick="logout()">退出登录</button>
-
         </div>
 
     </div>
@@ -283,73 +271,6 @@
 
 
 <script>
-
-    const ACCESS_CODE = "4026";
-
-    const AUTH_KEY = "Patrol_Auth_V1";
-
-
-
-    function verifyAccess() {
-
-        const input = prompt("请输入访问口令 (Access Code):");
-
-        if (input === ACCESS_CODE) {
-
-            localStorage.setItem(AUTH_KEY, "true");
-
-            document.getElementById('lock-screen').style.display = 'none';
-
-            document.getElementById('main-content').style.display = 'block';
-
-            init();
-
-        } else if (input !== null) {
-
-            alert("口令错误！");
-
-        }
-
-    }
-
-
-
-    function checkAuth() {
-
-        if (localStorage.getItem(AUTH_KEY) === "true") {
-
-            document.getElementById('lock-screen').style.display = 'none';
-
-            document.getElementById('main-content').style.display = 'block';
-
-            init();
-
-        } else {
-
-            document.getElementById('lock-screen').style.display = 'flex';
-
-            document.getElementById('main-content').style.display = 'none';
-
-        }
-
-    }
-
-
-
-    function logout() {
-
-        if(confirm("确定要退出登录吗？下次进入需重新输入口令。")) {
-
-            localStorage.removeItem(AUTH_KEY);
-
-            location.reload();
-
-        }
-
-    }
-
-
-
     const qrLinks = {
 
         1: "https://jwsite.sharepoint.com/sites/tha-cd-patrol/SitePages/Bethel-Patrol.aspx?checkPointTitle=Level-1-Gate-North&Source=confirmation.aspx",
@@ -787,11 +708,7 @@
         }
 
     }
-
-
-
-    checkAuth();
-
+    init();
 </script>
 
 </body>
